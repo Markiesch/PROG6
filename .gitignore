@@ -1,3 +1,5 @@
 ﻿.idea
 obj
 bin
+
+Application.Web/appsettings.json
