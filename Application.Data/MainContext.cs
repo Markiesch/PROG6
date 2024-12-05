@@ -63,7 +63,7 @@ public class MainContext(DbContextOptions<MainContext> options) : DbContext(opti
         builder.Entity<BookingDetail>().HasData(
             new BookingDetail { Id = 1, BookingId = 1, AnimalId = 1 },
             new BookingDetail { Id = 2, BookingId = 1, AnimalId = 3 },
-            new BookingDetail { Id = 2, BookingId = 1, AnimalId = 7 }
+            new BookingDetail { Id = 3, BookingId = 1, AnimalId = 7 }
         );
     }
 
@@ -84,12 +84,12 @@ public class MainContext(DbContextOptions<MainContext> options) : DbContext(opti
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.FirstName).IsRequired().HasMaxLength(255);
-            entity.Property(e => e.Infix).IsRequired().HasMaxLength(5);
+            entity.Property(e => e.Infix).HasMaxLength(5);
             entity.Property(e => e.LastName).IsRequired().HasMaxLength(255);
             entity.Property(e => e.Address).IsRequired().HasMaxLength(255);
             entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
             entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(15);
-            entity.Property(e => e.CustomerCardType).HasConversion<string>().IsRequired();
+            entity.Property(e => e.CustomerCardType).HasConversion<string>();
         });
 
         // Boeking Configuratie
