@@ -1,8 +1,23 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@for (int i = 0; i < 10; i++)
+{
+    <div class="uk-width-1-2@m uk-card uk-card-body uk-card-default uk-margin">
+        <h3 class="uk-card-title">Voorbeeldkaart</h3>
+        <p class="uk-margin">
+            Lorem ipsum <a href="#">dolor</a> sit amet, consectetur adipiscing elit, sed
+            do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+        <div class="uk-card-footer">
+            <a href="#" class="uk-button uk-margin-top uk-button-default">default</a> <br/>
+            <a href="#" class="uk-button uk-margin-top uk-button-ghost">ghost</a> <br/>
+            <a href="#" class="uk-button uk-margin-top uk-button-primary">primary</a> <br/>
+            <a href="#" class="uk-button uk-margin-top uk-button-secondary">secondary</a> <br/>
+            <a href="#" class="uk-button uk-margin-top uk-button-danger">danger</a> <br/>
+            <a href="#" class="uk-button uk-margin-top uk-button-text">text</a> <br/>
+            <a href="#" class="uk-button uk-margin-top uk-button-link">link</a> <br/>
+        </div>
+    </div>
+}
