@@ -2,22 +2,24 @@
     ViewData["Title"] = "Home";
 }
 
-@for (int i = 0; i < 10; i++)
-{
-    <div class="uk-width-1-2@m uk-card uk-card-body uk-card-default uk-margin">
-        <h3 class="uk-card-title">Voorbeeldkaart</h3>
-        <p class="uk-margin">
-            Lorem ipsum <a href="#">dolor</a> sit amet, consectetur adipiscing elit, sed
-            do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-        <div class="uk-card-footer">
-            <a href="#" class="uk-button uk-margin-top uk-button-default">default</a> <br/>
-            <a href="#" class="uk-button uk-margin-top uk-button-ghost">ghost</a> <br/>
-            <a href="#" class="uk-button uk-margin-top uk-button-primary">primary</a> <br/>
-            <a href="#" class="uk-button uk-margin-top uk-button-secondary">secondary</a> <br/>
-            <a href="#" class="uk-button uk-margin-top uk-button-danger">danger</a> <br/>
-            <a href="#" class="uk-button uk-margin-top uk-button-text">text</a> <br/>
-            <a href="#" class="uk-button uk-margin-top uk-button-link">link</a> <br/>
+<div class="text-center max-w-[80%] uk-margin-auto">
+    <h1 class="primary">
+        <span class="text-highlight">Boek</span> voor jouw Feestje een <span class="text-highlight">Beestje</span>
+    </h1>
+    <p>
+        Via Beestje op je Feestje (BOEK), kan je een of meerdere van onze dieren boeken voor op jouw feestje! Kies de dag van je feestje en volg de stappen om je beestje te boeken.
+    </p>
+    <form method="get" class="uk-margin-medium-top uk-display-inline-block text-left uk-width-auto space-y-1.5" asp-controller="Booking" asp-action="PickYourAnimal">
+        <label class="uk-form-label " for="date-input">Wanneer vier je jouw feestje?</label>
+        <div class="uk-form-controls">
+            <div class="uk-inline">
+                <div class="uk-form-icon">
+                    <uk-icon icon="calendar-days"></uk-icon>
+                </div>
+                <input class="uk-input date-input w-60" id="date-input" min="@DateOnly.FromDateTime(DateTime.Today.AddDays(1)).ToString("yyyy-MM-dd")" type="date" name="date" required />
+            </div>
+            <button class="uk-button uk-button-primary background-highlight">Boeken</button>
         </div>
-    </div>
-}
+    </form>
+</div>
+<img src="~/img/banner.png" class="w-full uk-position-relative uk-position-z-index-negative mt-[-5rem]" alt="Banner" />
