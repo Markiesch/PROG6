@@ -1,9 +1,11 @@
 ﻿using Application.Data.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Data;
 
-public class MainContext(DbContextOptions<MainContext> options) : DbContext(options)
+public class MainContext(DbContextOptions<MainContext> options) : IdentityDbContext<User, IdentityRole, string>(options)
 {
     public DbSet<Animal> Animals { get; set; }
     public DbSet<User> Users { get; set; }
@@ -50,10 +52,10 @@ public class MainContext(DbContextOptions<MainContext> options) : DbContext(opti
         );
 
         builder.Entity<User>().HasData(
-            new User { Id = 1, FirstName = "Jan", Infix = null, LastName = "Jansen", Address = "Straat 1, 1234 AB", Email = "jan@example.com", PhoneNumber = "0612345678", CustomerCardType = null },
-            new User { Id = 2, FirstName = "Piet", Infix = null, LastName = "Pietersen", Address = "Straat 2, 1234 CD", Email = "pite@example.com", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Silver },
-            new User { Id = 3, FirstName = "Karin", Infix = null, LastName = "Klaassen", Address = "Straat 3, 1234 EF", Email = "karin@example.com", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Gold },
-            new User { Id = 4, FirstName = "Sophie", Infix = "de", LastName = "Groot", Address = "Straat 4, 1234 GH", Email = "sophie@example.com", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Platinum }
+            new User { Id = "1", FirstName = "Jan", Infix = null, LastName = "Jansen", Address = "Straat 1, 1234 AB", Email = "jan@example.com", PhoneNumber = "0612345678", CustomerCardType = null },
+            new User { Id = "2", FirstName = "Piet", Infix = null, LastName = "Pietersen", Address = "Straat 2, 1234 CD", Email = "pite@example.com", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Silver },
+            new User { Id = "3", FirstName = "Karin", Infix = null, LastName = "Klaassen", Address = "Straat 3, 1234 EF", Email = "karin@example.com", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Gold },
+            new User { Id = "4", FirstName = "Sophie", Infix = "de", LastName = "Groot", Address = "Straat 4, 1234 GH", Email = "sophie@example.com", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Platinum }
         );
 
         builder.Entity<Booking>().HasData(

@@ -1,0 +1,18 @@
+﻿@model Application.Web.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<form asp-action="Login" method="post">
+    <h1>Inloggen</h1>
+    
+    <label for="email" class="uk-form-label">E-mail</label>
+    <input id="email" class="uk-input" type="text" asp-for="Email" />
+
+    <label for="password" class="uk-form-label">Wachtwoord</label>
+    <input id="password" class="uk-input" type="password" asp-for="Password" />
+    
+    <button type="submit" class="uk-button uk-button-primary">Inloggen</button>
+</form>
+
