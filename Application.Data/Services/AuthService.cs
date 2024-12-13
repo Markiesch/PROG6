@@ -10,7 +10,12 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
         var user = await userManager.FindByEmailAsync(email);
         if (user == null) return null;
 
-        var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
+        var result = await signInManager.PasswordSignInAsync(user, password, isPersistent: false, lockoutOnFailure: false);
         return result.Succeeded ? user : null;
+    }
+    
+    public async Task Logout()
+    {
+        await signInManager.SignOutAsync();
     }
 }
