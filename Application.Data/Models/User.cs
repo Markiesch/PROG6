@@ -2,7 +2,7 @@
 
 namespace Application.Data.Models;
 
-public class User : IdentityUser<string>
+public class User : IdentityUser<int>
 {
     public string FirstName { get; init; } = string.Empty;
     public string? Infix { get; init; }
