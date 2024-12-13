@@ -25,4 +25,11 @@ public class AuthController(AuthService authService) : Controller
         ModelState.AddModelError("Password", error);
         return View("Login", model);
     }
+    
+    [HttpPost("/logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await authService.Logout();
+        return RedirectToAction("Login");
+    }
 }
