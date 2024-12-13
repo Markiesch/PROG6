@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Data;
 
-public class MainContext(DbContextOptions<MainContext> options) : IdentityDbContext<User, IdentityRole, string>(options)
+public class MainContext(DbContextOptions<MainContext> options) : IdentityDbContext<User, IdentityRole<int>, int>(options)
 {
     public DbSet<Animal> Animals { get; set; }
-    public DbSet<User> Users { get; set; }
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<BookingDetail> BookingDetails { get; set; }
     
@@ -49,23 +48,6 @@ public class MainContext(DbContextOptions<MainContext> options) : IdentityDbCont
             // VIP
             new Animal { Id = 15, Name = "T-Rex", Type = AnimalType.Vip, Price = 500.0m, Image = "/images/trex.jpg" },
             new Animal { Id = 16, Name = "Unicorn", Type = AnimalType.Vip, Price = 1000.0m, Image = "/images/unicorn.jpg" }
-        );
-
-        builder.Entity<User>().HasData(
-            new User { Id = "1", FirstName = "Jan", Infix = null, LastName = "Jansen", Address = "Straat 1, 1234 AB", Email = "jan@example.com", PhoneNumber = "0612345678", CustomerCardType = null },
-            new User { Id = "2", FirstName = "Piet", Infix = null, LastName = "Pietersen", Address = "Straat 2, 1234 CD", Email = "pite@example.com", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Silver },
-            new User { Id = "3", FirstName = "Karin", Infix = null, LastName = "Klaassen", Address = "Straat 3, 1234 EF", Email = "karin@example.com", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Gold },
-            new User { Id = "4", FirstName = "Sophie", Infix = "de", LastName = "Groot", Address = "Straat 4, 1234 GH", Email = "sophie@example.com", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Platinum }
-        );
-
-        builder.Entity<Booking>().HasData(
-            new Booking { Id = 1, Datum = new DateTime(2024, 12, 25), Bevestigd = false, Totaalprijs = 150.0m, KlantId = 1 }
-        );
-
-        builder.Entity<BookingDetail>().HasData(
-            new BookingDetail { Id = 1, BookingId = 1, AnimalId = 1 },
-            new BookingDetail { Id = 2, BookingId = 1, AnimalId = 3 },
-            new BookingDetail { Id = 3, BookingId = 1, AnimalId = 7 }
         );
     }
 
