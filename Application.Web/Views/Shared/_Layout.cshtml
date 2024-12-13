@@ -65,8 +65,10 @@
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
                         <div>
-                            <a href="#" class="uk-button uk-button-primary">Mijn account</a>
-                            <a asp-action="Logout" asp-controller="Auth" class="uk-button uk-button-default">Uitloggen</a>
+                            <form asp-action="Logout" asp-controller="Auth" method="post">
+                                <a href="#" class="uk-button uk-button-primary">Mijn account</a>
+                                <button type="submit" class="uk-button uk-button-default">Uitloggen</button>
+                            </form>
                         </div>
                     }
                     else
