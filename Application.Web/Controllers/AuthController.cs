@@ -1,4 +1,5 @@
 ﻿using Application.Data.Services;
+using Application.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Web.Controllers;
@@ -11,12 +12,17 @@ public class AuthController(AuthService authService) : Controller
         return View();
     }
     
-    [HttpPost]
-    public async Task<IActionResult> Login(string email, string password)
+    [HttpPost("/login")]
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
-        var user = await authService.Login(email, password);
-        if (user == null) return View();
+        if (!ModelState.IsValid) return View("Login", model);
         
-        return RedirectToAction("Index", "Home");
+        var user = await authService.Login(model.Email, model.Password);
+        if (user != null) return RedirectToAction("Index", "Home");
+        
+        const string error = "Email of wachtwoord is onjuist";
+        ModelState.AddModelError("Email", error);
+        ModelState.AddModelError("Password", error);
+        return View("Login", model);
     }
 }
