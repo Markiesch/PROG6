@@ -18,7 +18,7 @@
             <div uk-navbar>
                 <div class="uk-navbar-left">
                     <a class="uk-navbar-item uk-logo" asp-controller="Home" asp-action="Index">
-                        <img src="~/img/logo.svg" class="h-12" alt="Beestje op je Feestje" />
+                        <img src="~/img/logo.svg" class="h-12" alt="Beestje op je Feestje"/>
                     </a>
                 </div>
                 <div class="uk-navbar-center">
@@ -48,7 +48,8 @@
                                         <li>
                                             <a href="#" class="uk-flex-column !items-start">
                                                 <p class="uk-text-bold">Nieuw beestje</p>
-                                                <p class="uk-text-meta">Voeg een nieuw beestje toe, zodat klanten deze kunnen boeken!</p>
+                                                <p class="uk-text-meta">Voeg een nieuw beestje toe, zodat klanten deze
+                                                    kunnen boeken!</p>
                                             </a>
                                         </li>
                                     </ul>
@@ -61,17 +62,16 @@
                     </ul>
                 </div>
                 <div class="uk-navbar-right">
-                    @* TODO: show login or logout button depending on user role *@
-                    @if (true)
-                    {
-                        <a href="#" class="uk-button uk-button-primary">Inloggen</a>
-                    }
-                    else
+                    @if (User.Identity?.IsAuthenticated ?? false)
                     {
                         <div>
                             <a href="#" class="uk-button uk-button-primary">Mijn account</a>
-                            <a href="#" class="uk-button uk-button-default">Uitloggen</a>
+                            <a asp-action="Logout" asp-controller="Auth" class="uk-button uk-button-default">Uitloggen</a>
                         </div>
+                    }
+                    else
+                    {
+                        <a asp-action="Login" asp-controller="Auth" class="uk-button uk-button-primary">Inloggen</a>
                     }
                 </div>
             </div>
@@ -82,7 +82,13 @@
     @if (TempData["Alert"] != null)
     {
         <div class="uk-alert uk-alert-danger uk-margin-top" uk-alert>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 class="lucide lucide-info">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+            </svg>
             <a href class="uk-alert-close" uk-close></a>
             <div class="uk-alert-title">@TempData["Alert"]</div>
             @if (TempData["AlertDescription"] != null)
@@ -91,7 +97,7 @@
             }
         </div>
     }
-    
+
     <main role="main" class="uk-margin-top">
         @RenderBody()
     </main>
