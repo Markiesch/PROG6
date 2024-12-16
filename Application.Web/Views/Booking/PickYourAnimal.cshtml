@@ -1,6 +1,52 @@
-@model DateOnly
+@using Application.Web.Views.Components
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BookingStep2ViewModel
 @{
     ViewData["Title"] = "Kies je beestje";
 }
 
-<h1>Kies je beestje - @Model</h1>
+<component type="typeof(ProgressSteps)" render-mode="ServerPrerendered" param-CurrentStep="2" />
+
+<div class="uk-flex uk-flex-wrap-reverse gap-4">
+    <form class="uk-card uk-card-default uk-width-expand">
+        <div class="uk-card-header flex uk-align-center uk-flex-between">
+            <h1>Stap 2 - Kies je beestjes</h1>
+            <button class="uk-button uk-button-primary" type="submit">Volgende stap</button>
+        </div>
+        <div class="uk-card-body uk-flex uk-flex-wrap uk-flex-between -mb-4">
+            @foreach (var animal in Model.Animals)
+            {
+                <div class="uk-card uk-card-default !mb-4">
+                    @* TODO: make selectable cards with checkbox and correct UI *@
+                    <div class="uk-card-body">
+                        <img src="@animal.Image" alt="@animal.Name" class="uk-height-small"/>
+                    </div>
+                </div>
+            }
+        </div>
+    </form>
+    <div class="uk-width-1-4">
+        <div class="uk-card uk-card-default" uk-sticky="offset: 25">
+            <div class="uk-card-header uk-margin-bottom">
+                <h2 class="uk-card-title">Overzicht boeking</h2>
+            </div>
+            <div class="uk-card-body">
+                <div class="uk-margin-bottom">
+                    <p class="uk-text-muted">Datum</p>
+                    <p class="uk-text-bold">@Model.Date.ToShortDateString()</p>
+                </div>
+                <div class="uk-margin-bottom">
+                    <p class="uk-text-muted">Beestjes</p>
+                    @if (true)
+                    {
+                        <p class="uk-text-italic uk-text-bold">Er zijn nog geen beestjes geselecteerd</p>
+                    }
+                    else
+                    {
+                        // TODO: show selected animals
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

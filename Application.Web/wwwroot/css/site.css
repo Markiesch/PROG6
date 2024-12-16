@@ -45,11 +45,6 @@ body {
   color: hsl(var(--foreground));
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: inherit;
-  color: #131313;
-}
-
 .text-highlight {
   color: hsl(var(--highlight));
 }
@@ -57,15 +52,61 @@ h1, h2, h3, h4, h5, h6 {
   background-color: hsl(var(--highlight));
 }
 
-h1.primary {
-  font-family: "Pacifico", cursive;
-  font-size: 6.5rem;
-  line-height: 1;
+h1 {
+  font-family: inherit !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
   padding: .1em 0;
   margin-bottom: .6em;
+}
+h1.primary {
+  font-family: "Pacifico", cursive !important;
+  font-size: 6.5rem !important;
+}
+h2 {
+  font-size: 1.25rem !important;
 }
 
 .date-input::-webkit-calendar-picker-indicator {
   opacity: 0;
   width: 50%;
+}
+
+.uk-card-header {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* progress stepper */
+.progress-stepper .rounded-full {
+  position: relative;
+}
+.progress-stepper li:not(.last-step) .rounded-full::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 2px);
+  left: calc(50% + 40px);
+  width: calc(400px - 100% - 80px);
+  height: 4px;
+  background-color: hsl(var(--border));
+  border-radius: 2em;
+}
+.progress-stepper .todo .rounded-full {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--primary));
+}
+.progress-stepper .active .rounded-full {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--secondary));
+}
+.progress-stepper .active .rounded-full::after {
+  background: linear-gradient(to right, hsl(var(--primary)) 50%, hsl(var(--border)) 50%);
+}
+.progress-stepper .finished .rounded-full {
+  background-color: hsl(var(--highlight));
+  color: hsl(var(--secondary));
+}
+.progress-stepper .finished .rounded-full::after {
+  background-color: hsl(var(--highlight)) !important;
 }
