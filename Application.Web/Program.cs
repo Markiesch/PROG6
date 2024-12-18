@@ -42,14 +42,23 @@ using (var scope = app.Services.CreateScope())
 {
     try
     {
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
+        foreach (var role in Enum.GetValues<UserRole>())
+        {
+            var roleName = role.ToString();
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole<int>(roleName));
+            }
+        }
+        
         var users = new List<User>
         {
-            new() { UserName = "jan@example.com", Email = "jan@example.com", FirstName = "Jan", LastName = "Jansen", Address = "Straat 1, 1234 AB", PhoneNumber = "0612345678" },
-            new() { UserName = "pite@example.com", Email = "pite@example.com", FirstName = "Piet", LastName = "Pietersen", Address = "Straat 2, 1234 CD", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Silver },
-            new() { UserName = "karin@example.com", Email = "karin@example.com", FirstName = "Karin", LastName = "Klaassen", Address = "Straat 3, 1234 EF", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Gold },
-            new() { UserName = "sophie@example.com", Email = "sophie@example.com", FirstName = "Sophie", Infix = "de", LastName = "Groot", Address = "Straat 4, 1234 GH", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Platinum }
+            new() { UserName = "customer1", Email = "customer1@example.com", FirstName = "customer", LastName = "1", Address = "Straat 1, 1234 AB", PhoneNumber = "0612345678" },
+            new() { UserName = "customer2", Email = "customer2@example.com", FirstName = "Piet", LastName = "2", Address = "Straat 2, 1234 CD", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Silver },
+            new() { UserName = "admin", Email = "admin@example.com", FirstName = "Admin", LastName = "Admin", Address = "Straat 4, 1234 GH", PhoneNumber = "0612345678", CustomerCardType = CustomerCardType.Platinum }
         };
 
         foreach (var user in users)
@@ -57,6 +66,8 @@ using (var scope = app.Services.CreateScope())
             if (await userManager.FindByEmailAsync(user.Email!) == null)
             {
                 await userManager.CreateAsync(user, "Password123!");
+                var role = user.UserName == "admin" ? UserRole.Admin : UserRole.Customer;
+                await userManager.AddToRoleAsync(user, role.ToString());
             }
         }
     }
