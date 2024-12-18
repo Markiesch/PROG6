@@ -46,12 +46,15 @@
             </div>
             <div class="uk-card-body">
                 <div class="uk-margin-bottom">
-                    <p class="uk-text-muted">Datum</p>
-                    <p class="uk-text-bold">@Model.Date.ToShortDateString()</p>
+                    <div class="uk-flex uk-flex-between">
+                        <p class="uk-text-bold">Datum</p>
+                        <a asp-controller="Home" asp-action="Index" class="uk-text-bold text-highlight uk-link-text">Aanpassen</a>
+                    </div>
+                    <p class="uk-text-muted">@Model.Date.ToShortDateString()</p>
                 </div>
                 <div class="uk-margin-bottom">
-                    <p class="uk-text-muted">Beestjes</p>
-                    <p class="uk-text-italic uk-text-bold">Selecteer je beestjes in de lijst</p>
+                    <p class="uk-text-bold">Beestjes</p>
+                    <p class="uk-text-italic uk-text-muted">Selecteer je beestjes in de lijst</p>
                 </div>
             </div>
         </div>

@@ -10,6 +10,9 @@ public class BookingController : Controller
     [HttpGet]
     public IActionResult PickYourAnimal(DateOnly? date)
     {
+        // TODO: hier al validatie inbouwen voor x aantal kiezen en vip wel/niet?
+        // TODO: clear session data on start of booking
+        
         if (date == null)
         {
             TempData["Alert"] = "Selecteer een datum";
@@ -59,11 +62,17 @@ public class BookingController : Controller
         return View(viewModel);
     }
 
+    [HttpGet]
+    public IActionResult CustomerDetails()
+    {
+        return View();
+    }
+
     [HttpPost]
     public IActionResult SaveSelectedAnimals(DateOnly date, List<int> selectedAnimalIds)
     {
-        Console.WriteLine("Date: " + date);
-        Console.WriteLine("Selected Animal IDs: " + string.Join(", ", selectedAnimalIds));
-        return RedirectToAction("Index", "Home");
+        // TODO: save selected animals in session
+        
+        return RedirectToAction("CustomerDetails");
     }
 }
