@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Application.Data.Models
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -23,17 +24,17 @@
                 </div>
                 <div class="uk-navbar-center">
                     <ul class="uk-navbar-nav">
-                        @* TODO: show menu depending on user role, fix links to pages and check active page is correct *@
                         <li class="@(Context.Request.Path == "/home" || Context.Request.Path == "/" ? "uk-active" : "")">
                             <a asp-action="Index" asp-controller="Home">Home</a>
                         </li>
-                        @if (false)
+                        
+                        @if (User.IsInRole(UserRole.Customer.ToString()))
                         {
                             <li class="@(Context.Request.Path == "/myBookings" ? "uk-active" : "")">
                                 <a asp-action="Index" asp-controller="Home">Mijn boekingen</a>
                             </li>
                         }
-                        else
+                        else if (User.IsInRole(UserRole.Admin.ToString()))
                         {
                             <li class="@(Context.Request.Path.StartsWithSegments("/animals/") ? "uk-active" : "")">
                                 <a href="#">Beestjes beheer <span uk-navbar-parent-icon></span></a>
@@ -48,8 +49,7 @@
                                         <li>
                                             <a href="#" class="uk-flex-column !items-start">
                                                 <p class="uk-text-bold">Nieuw beestje</p>
-                                                <p class="uk-text-meta">Voeg een nieuw beestje toe, zodat klanten deze
-                                                    kunnen boeken!</p>
+                                                <p class="uk-text-meta">Voeg een nieuw beestje toe, zodat klanten deze kunnen boeken!</p>
                                             </a>
                                         </li>
                                     </ul>
