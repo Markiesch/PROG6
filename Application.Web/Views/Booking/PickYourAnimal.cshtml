@@ -1,3 +1,4 @@
+@using Application.Data.Models
 @using Application.Web.Views.Components
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model BookingStep2ViewModel
@@ -6,9 +7,8 @@
 }
 
 <component type="typeof(ProgressSteps)" render-mode="ServerPrerendered" param-CurrentStep="2" />
-
 <div class="uk-flex uk-flex-wrap-reverse gap-4">
-    <form class="uk-card uk-card-default uk-width-expand">
+    <form asp-action="SaveSelectedAnimals" method="post" class="uk-card uk-card-default uk-width-expand">
         <div class="uk-card-header flex uk-align-center uk-flex-between">
             <h1>Stap 2 - Kies je beestjes</h1>
             <button class="uk-button uk-button-primary" type="submit">Volgende stap</button>
@@ -16,14 +16,28 @@
         <div class="uk-card-body uk-flex uk-flex-wrap uk-flex-between -mb-4">
             @foreach (var animal in Model.Animals)
             {
-                <div class="uk-card uk-card-default !mb-4">
-                    @* TODO: make selectable cards with checkbox and correct UI *@
+                <input type="checkbox" id="animal-@animal.Id" name="selectedAnimalIds" value="@animal.Id" class="uk-checkbox uk-hidden" @(Model.UnavailableAnimals.Contains(animal) ? "disabled" : "")/>
+                <label class="uk-card uk-card-default !mb-4 checkbox-card @(animal.Type == AnimalType.Vip ? "checkbox-card--vip" : "")" for="animal-@animal.Id">
+                    @if (animal.Type == AnimalType.Vip)
+                    {
+                        <img src="/img/platinum-badge.png" height="48" width="48" alt="VIP" class="uk-position-top-left uk-position-z-index-high mt-1 ms-1"/>
+                    }
+                    <uk-icon icon="calendar-x" height="32" width="32" class="disabled-icon uk-text-danger uk-position-top-right uk-position-z-index-high mt-2 me-2"></uk-icon>
+                    <svg class="check-icon uk-position-top-right uk-position-z-index-high mt-2 me-2" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22Z" fill="#4a6c14" stroke="#4a6c14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                     <div class="uk-card-body">
                         <img src="@animal.Image" alt="@animal.Name" class="uk-height-small"/>
+                        <div class="uk-flex uk-flex-between uk-align-center uk-text-large uk-margin-top">
+                            <h3 class="uk-text-bolder">@animal.Name</h3>
+                            <p class="uk-text-bold text-muted-foreground">&euro;@animal.Price</p>
+                        </div>
                     </div>
-                </div>
+                </label>
             }
         </div>
+        <input type="hidden" name="date" value="@Model.Date" />
     </form>
     <div class="uk-width-1-4">
         <div class="uk-card uk-card-default" uk-sticky="offset: 25">
@@ -37,14 +51,7 @@
                 </div>
                 <div class="uk-margin-bottom">
                     <p class="uk-text-muted">Beestjes</p>
-                    @if (true)
-                    {
-                        <p class="uk-text-italic uk-text-bold">Er zijn nog geen beestjes geselecteerd</p>
-                    }
-                    else
-                    {
-                        // TODO: show selected animals
-                    }
+                    <p class="uk-text-italic uk-text-bold">Selecteer je beestjes in de lijst</p>
                 </div>
             </div>
         </div>

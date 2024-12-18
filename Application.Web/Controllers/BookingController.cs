@@ -7,6 +7,7 @@ namespace Application.Web.Controllers;
 
 public class BookingController : Controller
 {
+    [HttpGet]
     public IActionResult PickYourAnimal(DateOnly? date)
     {
         if (date == null)
@@ -56,5 +57,13 @@ public class BookingController : Controller
             UnavailableAnimals = unavailableAnimals
         };
         return View(viewModel);
+    }
+
+    [HttpPost]
+    public IActionResult SaveSelectedAnimals(DateOnly date, List<int> selectedAnimalIds)
+    {
+        Console.WriteLine("Date: " + date);
+        Console.WriteLine("Selected Animal IDs: " + string.Join(", ", selectedAnimalIds));
+        return RedirectToAction("Index", "Home");
     }
 }

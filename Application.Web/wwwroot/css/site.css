@@ -61,6 +61,32 @@ h2 {
   padding-bottom: 1rem;
 }
 
+/* checkbox card */
+input[type="checkbox"] + .checkbox-card {
+  cursor: pointer;
+}
+input[type="checkbox"]:not(:checked) + .checkbox-card .check-icon {
+  display: none;
+}
+input[type="checkbox"]:checked + .checkbox-card {
+  outline: 3px solid hsl(var(--highlight));
+  outline-offset: -3px;
+}
+input[type="checkbox"]:disabled + .checkbox-card {
+  cursor: not-allowed;
+  text-decoration: line-through;
+  background-color: hsl(var(--muted));
+}
+input[type="checkbox"]:disabled + .checkbox-card .uk-card-body img {
+  filter: grayscale(100%);
+}
+input[type="checkbox"]:not(:disabled) + .checkbox-card .disabled-icon {
+  display: none;
+}
+input[type="checkbox"]:not(:disabled) + .checkbox-card--vip {
+  background: linear-gradient(155.14deg, #0060AB 12.29%, #2393EA 21.59%, #1E81CE 29.6%, #B8DEFF 46.91%, #7CB8FF 62.3%, #BEDCFF 69.67%, #9BC9FF 76.4%);
+}
+
 /* progress stepper */
 .progress-stepper .rounded-full {
   position: relative;
