@@ -57,7 +57,7 @@ h1, h2, h3, h4, h5, h6 {
   background-color: hsl(var(--highlight));
 }
 
-h1.primary {
+.headline {
   font-family: "Pacifico", cursive;
   font-size: 6.5rem;
   line-height: 1;
@@ -65,7 +65,7 @@ h1.primary {
   margin-bottom: .6em;
 }
 
-h1.secondary {
+.heading-1 {
   font-family: "Pacifico", cursive;
   font-size: 2.5rem;
   line-height: 1;
