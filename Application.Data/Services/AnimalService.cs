@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Data.Services;
 
-public class AnimalService(MainContext mainContext)
+public class AnimalService(MainContext mainContext, BookingService bookingService)
 {
     public async Task<List<AnimalDto>> GetAnimals(string? query)
     {
@@ -21,6 +21,14 @@ public class AnimalService(MainContext mainContext)
             })
             .ToListAsync();
     } 
+    
+    public async Task<IEnumerable<BookingDto>?> GetBookings(int id, string? query)
+    {
+        var animal = await GetAnimal(id);
+        if (animal == null) return null;
+        
+        return await bookingService.GetBookingsByAnimalId(id, query);
+    }
     
     public async Task<AnimalDto?> GetAnimal(int id)
     {

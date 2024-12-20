@@ -22,6 +22,23 @@ public class AnimalController(AnimalService animalService) : Controller
         return View(model);
     }
     
+    [HttpGet("{id:int}/details")]
+    public async Task<IActionResult> Details(int id, string? query)
+    {
+        var bookings = await animalService.GetBookings(id, query);
+        if (bookings == null)
+        {
+            return NotFound();
+        }
+        
+        var model = new AnimalDetailsViewModel
+        {
+            Bookings = bookings 
+        };
+        
+        return View(model);
+    }
+    
     [HttpGet("create")]
     public IActionResult Create()
     {
