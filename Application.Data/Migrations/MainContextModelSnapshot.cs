@@ -144,7 +144,7 @@ namespace Application.Data.Migrations
                         new
                         {
                             Id = 12,
-                            Image = "/img/animals/sea-lion.png",
+                            Image = "/img/animals/seal.png",
                             Name = "Zeehond",
                             Price = 60.0m,
                             Type = "Snow"

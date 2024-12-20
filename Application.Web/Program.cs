@@ -16,6 +16,8 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options => { options.SignI
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AnimalService>();
+builder.Services.AddScoped<BookingService>();
 
 // Session
 builder.Services.AddDistributedMemoryCache();

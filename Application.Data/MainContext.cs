@@ -39,7 +39,7 @@ public class MainContext(DbContextOptions<MainContext> options) : IdentityDbCont
             // Sneeuw
             new Animal { Id = 10, Name = "Pinguïn", Type = AnimalType.Snow, Price = 80.0m, Image = "/img/animals/penguin.png" },
             new Animal { Id = 11, Name = "IJsbeer", Type = AnimalType.Snow, Price = 200.0m, Image = "/img/animals/polar-bear.png" },
-            new Animal { Id = 12, Name = "Zeehond", Type = AnimalType.Snow, Price = 60.0m, Image = "/img/animals/sea-lion.png" },
+            new Animal { Id = 12, Name = "Zeehond", Type = AnimalType.Snow, Price = 60.0m, Image = "/img/animals/seal.png" },
 
             // Woestijn
             new Animal { Id = 13, Name = "Kameel", Type = AnimalType.Desert, Price = 70.0m, Image = "/img/animals/camel.png" },

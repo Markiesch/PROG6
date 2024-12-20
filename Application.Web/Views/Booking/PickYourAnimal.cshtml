@@ -17,7 +17,7 @@
         <div class="uk-card-body uk-flex uk-flex-wrap uk-flex-between -mb-4">
             @foreach (var animal in Model.Animals)
             {
-                <input type="checkbox" id="animal-@animal.Id" name="selectedAnimalIds" value="@animal.Id" class="uk-checkbox uk-hidden" @(Model.UnavailableAnimals.Contains(animal) ? "disabled" : "")/>
+                <input type="checkbox" id="animal-@animal.Id" name="selectedAnimalIds" value="@animal.Id" class="uk-checkbox uk-hidden" @(animal.IsAvailable ? "disabled" : "")/>
                 <label class="uk-card uk-card-default !mb-4 checkbox-card @(animal.Type == AnimalType.Vip ? "checkbox-card--vip" : "")" for="animal-@animal.Id">
                     @if (animal.Type == AnimalType.Vip)
                     {
