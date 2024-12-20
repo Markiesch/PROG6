@@ -1,36 +1,73 @@
+@using System.IO
+@using System.Linq
 @using Application.Data.Models
 @model AnimalUpdateViewModel
 @{
     ViewData["Title"] = Model.Name + " bewerken";
 }
 
-<button class="uk-button uk-button-ghost">Terug naar overzicht</button>
+<a asp-action="Index" class="uk-button uk-button-link">
+    <uk-icon icon="arrow-left" class="uk-margin-small-right"></uk-icon>
+    Terug naar overzicht
+</a>
 
-<h1>@Model.Name bewerken</h1>
 
-<form asp-action="Update" asp-route-id="@Model.Id" method="post">
-    <label for="name" class="uk-form-label">Naam*</label>
-    <input type="text" id="name" class="uk-input" asp-for="@Model.Name"/>
+<div class="grid grid-cols-2 gap-4 uk-margin-top">
+    <div class="uk-card uk-card-default">
+        <div class="uk-card-header">
+            <h1 class="uk-margin-bottom">@Model.Name bewerken</h1>
+        </div>
+        <div class="uk-card-body uk-margin-top">
 
-    @{
-        var types = Enum.GetValues<AnimalType>()
-            .Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() });
-    }
-    <label for="type" class="uk-form-label">Type*</label>
-    <select class="uk-select" id="type" asp-for="Type" asp-items="types"></select>
+            <form asp-action="Update" asp-route-id="@Model.Id" method="post">
+                <label for="name" class="uk-form-label">Naam*</label>
+                <input type="text" id="name" class="uk-input" asp-for="@Model.Name"/>
 
-    <label for="price" class="uk-form-label">Prijs*</label>
-    <input type="number" id="price" class="uk-input" asp-for="@Model.Price"/>
+                @{
+                    var types = Enum.GetValues<AnimalType>()
+                        .Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToDisplayName() });
+                }
+                <label for="type" class="uk-form-label uk-margin-top uk-display-inline-block">Type*</label>
+                <select class="uk-select" id="type" asp-for="Type" asp-items="types"></select>
 
-    <label for="image" class="uk-form-label">Afbeelding*</label>
-    <input type="text" id="image" class="uk-input" asp-for="@Model.Image"/>
+                <label for="price" class="uk-form-label uk-margin-top uk-display-inline-block">Prijs*</label>
+                <input type="number" id="price" class="uk-input" asp-for="@Model.Price"/>
 
-    <div class="uk-flex uk-flex-between uk-margin-top">
-        <button class="uk-button uk-button-danger">Verwijderen</button>
+                <label for="image" class="uk-form-label uk-margin-top uk-display-inline-block">Afbeelding*</label>
+                <select id="image" class="uk-select" asp-for="@Model.Image">
+                    @foreach (var image in Directory.GetFiles(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "animals")))
+                    {
+                        <option value="/@System.IO.Path.GetRelativePath("wwwroot", image).Replace('\\', '/')">@System.IO.Path.GetFileNameWithoutExtension(image)</option>
+                    }
+                </select>
 
-        <div class="uk-flex">
-            <a asp-action="Index" class="uk-button uk-button-default">Annuleren</a>
-            <button type="submit" class="uk-button uk-button-primary uk-margin-xsmall-left">Opslaan</button>
+                <div class="uk-flex uk-flex-between uk-margin-top">
+                    <button class="uk-button uk-button-danger">Verwijderen</button>
+
+                    <div class="uk-flex">
+                        <a asp-action="Index" class="uk-button uk-button-default">Annuleren</a>
+                        <button type="submit" class="uk-button uk-button-primary uk-margin-xsmall-left">Opslaan</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-</form>
+    <div class="uk-card uk-card-body uk-card-default">
+        <div class="uk-flex uk-flex-between">
+            <div>
+                <h2 class="uk-card-title" id="animal-name">@Model.Name</h2>
+
+                <h3 class="uk-margin-top font-bold">Type</h3>
+                <p id="animal-type">@Model.Type.ToDisplayName()</p>
+
+                <h3 class="uk-margin-top font-bold">Prijs</h3>
+                <p>&euro;<span id="animal-price">@Model.Price</span></p>
+            </div>
+            <div class="w-1/2">
+                <img id="animal-image" src="@Model.Image" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/animal.js"></script>

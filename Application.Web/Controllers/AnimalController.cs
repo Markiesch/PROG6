@@ -1,4 +1,5 @@
-﻿using Application.Data.Services;
+﻿using Application.Data.Models;
+using Application.Data.Services;
 using Application.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,15 @@ public class AnimalController(AnimalService animalService) : Controller
     [HttpGet("create")]
     public IActionResult Create()
     {
-        return View();
+        var model = new AnimalUpdateViewModel
+        {
+            Id = -1,
+            Name = string.Empty,
+            Type = AnimalType.Vip,
+            Price = 50,
+            Image = null,
+        };
+        return View(model);
     }
     
     [HttpPost("create")]

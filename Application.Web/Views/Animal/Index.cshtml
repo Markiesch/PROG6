@@ -4,7 +4,6 @@
     ViewData["Title"] = "Alle beestjes";
 }
 
-
 <div class="uk-flex uk-flex-between uk-margin-bottom">
     <h1>Alle beestjes</h1>
     <div class="uk-flex">
@@ -17,12 +16,10 @@
             </div>
             <button class="uk-button uk-button-primary">Zoeken</button>
         </form>
-        <form>
-            <button class="uk-button uk-button-primary uk-margin-small-left">
-                <uk-icon icon="plus" class="uk-margin-small-right"></uk-icon>
-                Nieuw beestje
-            </button>
-        </form>
+        <a asp-action="Create" class="uk-button uk-button-primary uk-margin-small-left">
+            <uk-icon icon="plus" class="uk-margin-small-right"></uk-icon>
+            Nieuw beestje
+        </a>
     </div>
 </div>
 
