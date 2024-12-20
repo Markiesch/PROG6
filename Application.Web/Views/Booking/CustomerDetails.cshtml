@@ -1,5 +1,7 @@
 @using Application.Web.Views.Components
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model BookingStep3ViewModel
 @{
     ViewData["Title"] = "Kies je beestje";
 }
@@ -24,7 +26,7 @@
             <div class="uk-card-body">
                 <div class="uk-margin-bottom">
                     <p class="uk-text-bold">Datum</p>
-                    @* TODO: <p class="uk-text-muted">@Model.Date.ToShortDateString()</p> *@ <p class="uk-text-muted">datum</p>
+                    <p class="uk-text-muted">@Model.Date.ToShortDateString()</p>
                 </div>
                 <div class="uk-margin-bottom">
                     <div class="uk-flex uk-flex-between">

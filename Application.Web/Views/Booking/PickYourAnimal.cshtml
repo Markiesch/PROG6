@@ -6,7 +6,8 @@
     ViewData["Title"] = "Kies je beestje";
 }
 
-<component type="typeof(ProgressSteps)" render-mode="ServerPrerendered" param-CurrentStep="2" />
+<component type="typeof(ProgressSteps)" render-mode="ServerPrerendered" param-CurrentStep="2" param-Date="@Model.Date" />
+
 <div class="uk-flex uk-flex-wrap-reverse gap-4">
     <form asp-action="SaveSelectedAnimals" method="post" class="uk-card uk-card-default uk-width-expand">
         <div class="uk-card-header flex uk-align-center uk-flex-between">

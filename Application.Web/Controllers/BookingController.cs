@@ -1,4 +1,4 @@
-using Application.Data;
+using System.Text.Json;
 using Application.Data.Models;
 using Application.Web.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +10,12 @@ public class BookingController : Controller
     [HttpGet]
     public IActionResult PickYourAnimal(DateOnly? date)
     {
-        // TODO: hier al validatie inbouwen voor x aantal kiezen en vip wel/niet?
-        // TODO: clear session data on start of booking
+        // TODO: clear session
         
-        if (date == null)
+        if (date == null || date < DateOnly.FromDateTime(DateTime.Now))
         {
             TempData["Alert"] = "Selecteer een datum";
-            TempData["AlertDescription"] = "Je moet een datum selecteren om een boeking te starten.";
+            TempData["AlertDescription"] = "Je moet een datum in de toekomst selecteren om een boeking te starten.";
             return RedirectToAction("Index", "Home");
         }
 
@@ -53,6 +52,7 @@ public class BookingController : Controller
             animal4
         };
 
+        // TODO: hier al validatie inbouwen voor x aantal kiezen en vip wel/niet?
         var viewModel = new BookingStep2ViewModel
         {
             Date = (DateOnly)date,
@@ -65,14 +65,36 @@ public class BookingController : Controller
     [HttpGet]
     public IActionResult CustomerDetails()
     {
-        return View();
+        var date = HttpContext.Session.GetString("BookingDate");
+        var selectedAnimalIds = JsonSerializer.Deserialize<List<int>>(HttpContext.Session.GetString("SelectedAnimalIds") ?? string.Empty);
+        var selectedAnimals = new List<Animal>(); // TODO: get animals from database by id
+        
+        if (date == null)
+        {
+            TempData["Alert"] = "Selecteer een datum";
+            TempData["AlertDescription"] = "Je moet een datum selecteren om verder te gaan.";
+            return RedirectToAction("Index", "Home");
+        }
+        if (selectedAnimalIds == null || selectedAnimalIds.Count == 0)
+        {
+            TempData["Alert"] = "Selecteer een dier";
+            TempData["AlertDescription"] = "Je moet minimaal één dier selecteren om verder te gaan.";
+            return RedirectToAction("PickYourAnimal", new { date });
+        }
+
+        var viewModel = new BookingStep3ViewModel()
+        {
+            Date = DateOnly.Parse(date),
+            SelectedAnimals = selectedAnimals
+        };
+        return View(viewModel);
     }
 
     [HttpPost]
     public IActionResult SaveSelectedAnimals(DateOnly date, List<int> selectedAnimalIds)
     {
-        // TODO: save selected animals in session
-        
+        HttpContext.Session.SetString("BookingDate", date.ToString());
+        HttpContext.Session.SetString("SelectedAnimalIds", JsonSerializer.Serialize(selectedAnimalIds));
         return RedirectToAction("CustomerDetails");
     }
 }

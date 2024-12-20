@@ -1,12 +1,15 @@
 @code {
     [Parameter]
-    public int CurrentStep { get; set; }
+    public required int CurrentStep { get; set; }
+    
+    [Parameter]
+    public DateOnly Date { get; set; }
 }
 
 <div class="progress-stepper mb-10 mt-8 uk-padding-left uk-padding-right">
     <ol class="flex items-center uk-flex-between">
         <li>
-            <a class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 1 ? "todo" : CurrentStep == 1 ? "active" : "finished")">
+            <a href="/" class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 1 ? "todo" : CurrentStep == 1 ? "active" : "finished")">
                 <div class="rounded-full uk-background-secondary text-primary w-8 h-8 flex items-center justify-center">
                     @if (CurrentStep <= 1)
                     {
@@ -21,7 +24,7 @@
             </a>
         </li>
         <li>
-            <a class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 2 ? "todo" : CurrentStep == 2 ? "active" : "finished")">
+            <a href="@(CurrentStep > 2 ? "/Booking/PickYourAnimal?date=@Date" : "")" class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 2 ? "todo" : CurrentStep == 2 ? "active" : "finished")">
                 <div class="rounded-full uk-background-secondary text-primary w-8 h-8 flex items-center justify-center">
                     @if (CurrentStep <= 2)
                     {
@@ -36,7 +39,7 @@
             </a>
         </li>
         <li>
-            <a class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 3 ? "todo" : CurrentStep == 3 ? "active" : "finished")">
+            <a href="@(CurrentStep > 3 ? "/Booking/CustomerDetails" : "")" class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 3 ? "todo" : CurrentStep == 3 ? "active" : "finished")">
                 <div class="rounded-full uk-background-secondary text-primary w-8 h-8 flex items-center justify-center">
                     @if (CurrentStep <= 3)
                     {
