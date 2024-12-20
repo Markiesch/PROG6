@@ -29,8 +29,7 @@ public class BookingController(AnimalService animalService) : Controller
         };
 
         // TODO: hier al validatie inbouwen voor x aantal kiezen en vip wel/niet?
-        // TODO: rename models naar zelfde als viewnamen
-        var viewModel = new BookingStep2ViewModel
+        var viewModel = new PickYourAnimalViewModel
         {
             Date = (DateOnly)date,
             Animals = animals,
@@ -59,7 +58,7 @@ public class BookingController(AnimalService animalService) : Controller
             return RedirectToAction("PickYourAnimal", new { date });
         }
 
-        var viewModel = new BookingStep3ViewModel()
+        var viewModel = new CustomerDetailsViewModel()
         {
             Date = DateOnly.Parse(date),
             SelectedAnimals = selectedAnimals
