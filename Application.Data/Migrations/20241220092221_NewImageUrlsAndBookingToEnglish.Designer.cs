@@ -4,6 +4,7 @@ using Application.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Application.Data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20241220092221_NewImageUrlsAndBookingToEnglish")]
+    partial class NewImageUrlsAndBookingToEnglish
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,7 +147,7 @@ namespace Application.Data.Migrations
                         new
                         {
                             Id = 12,
-                            Image = "/img/animals/seal.png",
+                            Image = "/img/animals/sea-lion.png",
                             Name = "Zeehond",
                             Price = 60.0m,
                             Type = "Snow"

@@ -16,6 +16,16 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options => { options.SignI
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AnimalService>();
+builder.Services.AddScoped<BookingService>();
+
+// Session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -33,6 +43,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

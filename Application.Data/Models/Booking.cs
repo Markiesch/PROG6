@@ -3,12 +3,12 @@
 public class Booking
 {
     public int Id { get; set; }
-    public DateTime Datum { get; set; }
-    public bool Bevestigd { get; set; }
-    public decimal Totaalprijs { get; set; }
+    public DateTime Date { get; set; }
+    public bool Confirmed { get; set; }
+    public decimal Totalprice { get; set; }
 
     // Relaties
-    public int KlantId { get; set; }
-    public User Klant { get; set; } = null!;
+    public int CustomerId { get; set; }
+    public User Customer { get; set; } = null!;
     public ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
 }

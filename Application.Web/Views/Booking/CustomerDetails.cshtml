@@ -1,0 +1,42 @@
+@using Application.Web.Views.Components
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model CustomerDetailsViewModel
+@{
+    ViewData["Title"] = "Kies je beestje";
+}
+
+<component type="typeof(BookingStepper)" render-mode="ServerPrerendered" param-CurrentStep="3" />
+
+<div class="uk-flex uk-flex-wrap-reverse gap-4">
+    <form asp-action="" method="post" class="uk-card uk-card-default uk-width-expand">
+        <div class="uk-card-header flex uk-align-center uk-flex-between">
+            <h1>Stap 3 - Vul je contactgegevens in</h1>
+            <button class="uk-button uk-button-primary" type="submit">Boeking afronden</button>
+        </div>
+        <div class="uk-card-body uk-flex uk-flex-wrap uk-flex-between -mb-4">
+            Form fields
+        </div>
+    </form>
+    <div class="uk-width-1-4">
+        <div class="uk-card uk-card-default" uk-sticky="offset: 25">
+            <div class="uk-card-header uk-margin-bottom">
+                <h2 class="uk-card-title">Overzicht boeking</h2>
+            </div>
+            <div class="uk-card-body">
+                <div class="uk-margin-bottom">
+                    <p class="uk-text-bold">Datum</p>
+                    <p class="uk-text-muted">@Model.Date.ToShortDateString()</p>
+                </div>
+                <div class="uk-margin-bottom">
+                    <div class="uk-flex uk-flex-between">
+                        <p class="uk-text-bold">Beestjes</p>
+                        @* TODO: date hieronder *@
+                        <a asp-controller="Booking" asp-action="PickYourAnimal" asp-route-date="" class="uk-text-bold text-highlight uk-link-text">Aanpassen</a>
+                    </div>
+                    <p class="uk-text-italic uk-text-muted">Selecteer je beestjes in de lijst</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
