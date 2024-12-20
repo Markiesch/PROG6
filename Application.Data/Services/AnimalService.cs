@@ -21,6 +21,22 @@ public class AnimalService(MainContext mainContext)
             .ToListAsync();
     } 
     
+    public async Task<AnimalDto?> GetAnimal(int id)
+    {
+        return await mainContext.Animals
+            .Where(a => a.Id == id)
+            .Select(a => new AnimalDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Type = a.Type,
+                Price = a.Price,
+                Image = a.Image,
+                IsAvailable = true
+            })
+            .FirstOrDefaultAsync();
+    }
+    
     public async Task<List<AnimalDto>> GetAnimalsWithAvailability(DateOnly date)
     {
         return await mainContext.Animals
@@ -35,4 +51,33 @@ public class AnimalService(MainContext mainContext)
             })
             .ToListAsync();
     } 
+    
+    
+    public async Task<bool> UpdateAnimal(int id, UpdateAnimalDto animal)
+    {
+        var entity = await mainContext.Animals.FindAsync(id);
+        if (entity == null) return false;
+        
+        entity.Name = animal.Name;
+        entity.Type = animal.Type;
+        entity.Price = animal.Price;
+        entity.Image = animal.Image;
+        
+        await mainContext.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task CreateAnimal(UpdateAnimalDto animal)
+    {
+        var entity = new Animal
+        {
+            Name = animal.Name,
+            Type = animal.Type,
+            Price = animal.Price,
+            Image = animal.Image
+        };
+        
+        mainContext.Animals.Add(entity);
+        await mainContext.SaveChangesAsync();
+    }
 }

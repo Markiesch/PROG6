@@ -1,0 +1,36 @@
+@using Application.Data.Models
+@model AnimalUpdateViewModel
+@{
+    ViewData["Title"] = Model.Name + " bewerken";
+}
+
+<button class="uk-button uk-button-ghost">Terug naar overzicht</button>
+
+<h1>@Model.Name bewerken</h1>
+
+<form asp-action="Update" asp-route-id="@Model.Id" method="post">
+    <label for="name" class="uk-form-label">Naam*</label>
+    <input type="text" id="name" class="uk-input" asp-for="@Model.Name"/>
+
+    @{
+        var types = Enum.GetValues<AnimalType>()
+            .Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() });
+    }
+    <label for="type" class="uk-form-label">Type*</label>
+    <select class="uk-select" id="type" asp-for="Type" asp-items="types"></select>
+
+    <label for="price" class="uk-form-label">Prijs*</label>
+    <input type="number" id="price" class="uk-input" asp-for="@Model.Price"/>
+
+    <label for="image" class="uk-form-label">Afbeelding*</label>
+    <input type="text" id="image" class="uk-input" asp-for="@Model.Image"/>
+
+    <div class="uk-flex uk-flex-between uk-margin-top">
+        <button class="uk-button uk-button-danger">Verwijderen</button>
+
+        <div class="uk-flex">
+            <a asp-action="Index" class="uk-button uk-button-default">Annuleren</a>
+            <button type="submit" class="uk-button uk-button-primary uk-margin-xsmall-left">Opslaan</button>
+        </div>
+    </div>
+</form>
