@@ -36,17 +36,15 @@
                 <select id="image" class="uk-select" asp-for="@Model.Image">
                     @foreach (var image in Directory.GetFiles(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "animals")))
                     {
-                        <option value="/@System.IO.Path.GetRelativePath("wwwroot", image).Replace('\\', '/')">@System.IO.Path.GetFileNameWithoutExtension(image)</option>
+                        var value = "/" + System.IO.Path.GetRelativePath("wwwroot", image).Replace('\\', '/');
+                        var text = System.IO.Path.GetFileNameWithoutExtension(image);
+                        <option value="@value">@text</option>
                     }
                 </select>
 
-                <div class="uk-flex uk-flex-between uk-margin-top">
-                    <button class="uk-button uk-button-danger">Verwijderen</button>
-
-                    <div class="uk-flex">
-                        <a asp-action="Index" class="uk-button uk-button-default">Annuleren</a>
-                        <button type="submit" class="uk-button uk-button-primary uk-margin-xsmall-left">Opslaan</button>
-                    </div>
+                <div class="uk-flex uk-flex-right uk-margin-top">
+                    <a asp-action="Index" class="uk-button uk-button-default">Annuleren</a>
+                    <button type="submit" class="uk-button uk-button-primary uk-margin-xsmall-left">Opslaan</button>
                 </div>
             </form>
         </div>

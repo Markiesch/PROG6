@@ -80,4 +80,14 @@ public class AnimalService(MainContext mainContext)
         mainContext.Animals.Add(entity);
         await mainContext.SaveChangesAsync();
     }
+
+    public async Task<bool> DeleteAnimal(int id)
+    {
+        var entity = await mainContext.Animals.FindAsync(id);
+        if (entity == null) return false;
+        
+        mainContext.Animals.Remove(entity);
+        await mainContext.SaveChangesAsync();
+        return true;
+    }
 }

@@ -11,14 +11,12 @@
     Terug naar overzicht
 </a>
 
-
 <div class="grid grid-cols-2 gap-4 uk-margin-top">
     <div class="uk-card uk-card-default">
         <div class="uk-card-header">
             <h1 class="uk-margin-bottom">@Model.Name bewerken</h1>
         </div>
         <div class="uk-card-body uk-margin-top">
-
             <form asp-action="Update" asp-route-id="@Model.Id" method="post">
                 <label for="name" class="uk-form-label">Naam*</label>
                 <input type="text" id="name" class="uk-input" asp-for="@Model.Name"/>
@@ -37,12 +35,14 @@
                 <select id="image" class="uk-select" asp-for="@Model.Image">
                     @foreach (var image in Directory.GetFiles(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "animals")))
                     {
-                        <option value="/@System.IO.Path.GetRelativePath("wwwroot", image).Replace('\\', '/')">@System.IO.Path.GetFileNameWithoutExtension(image)</option>
+                        var value = "/" + System.IO.Path.GetRelativePath("wwwroot", image).Replace('\\', '/');
+                        var text = System.IO.Path.GetFileNameWithoutExtension(image);
+                        <option value="@value">@text</option>
                     }
                 </select>
 
                 <div class="uk-flex uk-flex-between uk-margin-top">
-                    <button class="uk-button uk-button-danger">Verwijderen</button>
+                    <button type="submit" asp-action="Delete" asp-route-id="@Model.Id" class="uk-button uk-button-danger">Verwijderen</button>
 
                     <div class="uk-flex">
                         <a asp-action="Index" class="uk-button uk-button-default">Annuleren</a>

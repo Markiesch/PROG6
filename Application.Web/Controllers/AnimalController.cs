@@ -89,4 +89,18 @@ public class AnimalController(AnimalService animalService) : Controller
 
         return RedirectToAction("Index");
     }
+    
+    [HttpPost("{id:int}/delete")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        Console.WriteLine(id);
+        var result = await animalService.DeleteAnimal(id);
+        
+        if (!result)
+        {
+            return NotFound();
+        }
+
+        return RedirectToAction("Index");
+    }
 }
