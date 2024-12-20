@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Application.Data.Models
+<!DOCTYPE html>
 <html lang="en" class="uk-theme-slate">
 <head>
     <meta charset="utf-8"/>
@@ -18,22 +19,22 @@
             <div uk-navbar>
                 <div class="uk-navbar-left">
                     <a class="uk-navbar-item uk-logo" asp-controller="Home" asp-action="Index">
-                        <img src="~/img/logo.svg" class="h-12" alt="Beestje op je Feestje" />
+                        <img src="~/img/logo.svg" class="h-12" alt="Beestje op je Feestje"/>
                     </a>
                 </div>
                 <div class="uk-navbar-center">
                     <ul class="uk-navbar-nav">
-                        @* TODO: show menu depending on user role, fix links to pages and check active page is correct *@
                         <li class="@(Context.Request.Path == "/home" || Context.Request.Path == "/" ? "uk-active" : "")">
                             <a asp-action="Index" asp-controller="Home">Home</a>
                         </li>
-                        @if (false)
+                        
+                        @if (User.IsInRole(UserRole.Customer.ToString()))
                         {
                             <li class="@(Context.Request.Path == "/myBookings" ? "uk-active" : "")">
                                 <a asp-action="Index" asp-controller="Home">Mijn boekingen</a>
                             </li>
                         }
-                        else
+                        else if (User.IsInRole(UserRole.Admin.ToString()))
                         {
                             <li class="@(Context.Request.Path.StartsWithSegments("/animals/") ? "uk-active" : "")">
                                 <a href="#">Beestjes beheer <span uk-navbar-parent-icon></span></a>
@@ -61,17 +62,18 @@
                     </ul>
                 </div>
                 <div class="uk-navbar-right">
-                    @* TODO: show login or logout button depending on user role *@
-                    @if (true)
+                    @if (User.Identity?.IsAuthenticated ?? false)
                     {
-                        <a href="#" class="uk-button uk-button-primary">Inloggen</a>
+                        <div>
+                            <form asp-action="Logout" asp-controller="Auth" method="post">
+                                <a href="#" class="uk-button uk-button-primary">Mijn account</a>
+                                <button type="submit" class="uk-button uk-button-default">Uitloggen</button>
+                            </form>
+                        </div>
                     }
                     else
                     {
-                        <div>
-                            <a href="#" class="uk-button uk-button-primary">Mijn account</a>
-                            <a href="#" class="uk-button uk-button-default">Uitloggen</a>
-                        </div>
+                        <a asp-action="Login" asp-controller="Auth" class="uk-button uk-button-primary">Inloggen</a>
                     }
                 </div>
             </div>
@@ -82,7 +84,13 @@
     @if (TempData["Alert"] != null)
     {
         <div class="uk-alert uk-alert-danger uk-margin-top" uk-alert>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 class="lucide lucide-info">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+            </svg>
             <a href class="uk-alert-close" uk-close></a>
             <div class="uk-alert-title">@TempData["Alert"]</div>
             @if (TempData["AlertDescription"] != null)
@@ -91,7 +99,7 @@
             }
         </div>
     }
-    
+
     <main role="main" class="uk-margin-top">
         @RenderBody()
     </main>

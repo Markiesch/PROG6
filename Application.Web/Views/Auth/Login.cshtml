@@ -1,0 +1,27 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Application.Web.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="uk-flex uk-flex-middle">
+    <form asp-action="Login" method="post" asp-controller="Auth" class="uk-align-center" style="max-width: 25rem">
+        <h1 class="heading-1">Inloggen</h1>
+
+        <div class="uk-margin-bottom">
+            <label for="email" class="uk-form-label">E-mail</label>
+            <input asp-for="Email" id="email" class="uk-input" type="text"/>
+            <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Email"></span>
+        </div>
+
+        <label for="password" class="uk-form-label ">Wachtwoord</label>
+        <input asp-for="Password" id="password" class="uk-input" type="password"/>
+        <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Password"></span>
+
+        <button type="submit" class="uk-button uk-button-primary uk-margin-top uk-width-1">Inloggen</button>
+    </form>
+    <div class="uk-margin-large-left">
+        <img src="/img/login.png" alt="">
+    </div>
+</div>

@@ -11,63 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="EntityFramework" Version="6.5.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
     </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\001-monkey.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\002-beaver.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\003-dog.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\004-tiger.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\005-wolf.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\006-pig.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\007-rhino.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\008-sheep.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\009-butterfly.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\010-catfish.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\011-otter.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\012-chicken.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\013-duck.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\014-rabbit.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\015-alpaca.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\016-mouse.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\017-deer.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\018-cow.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\019-jellyfish.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\020-gorilla.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\021-elephant.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\022-lion.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\023-horse.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\024-goat.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\025-hippo.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\026-raccoon.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\027-crocodile.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\028-yak.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\029-bearded-dragon.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\030-fox.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\031-owl.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\032-pigeon.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\033-panda.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\034-cat.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\035-koala.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\036-frog.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\037-bat.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\038-chameleon.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\039-giraffe.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\040-beetle.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\041-dragonfly.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\042-snake.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\043-kangaroo.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\044-ladybug.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\045-parrot.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\046-penguin.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\047-ray.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\048-sloth.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\049-walrus.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\animals\050-boar.png" />
-    </ItemGroup>
-
 </Project>
