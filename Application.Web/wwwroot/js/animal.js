@@ -19,3 +19,5 @@ function updateAnimal() {
     animalPrice.innerText = priceInput.value;
     animalImage.src = imageInput.value;
 }
+
+updateAnimal();
