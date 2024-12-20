@@ -14,9 +14,6 @@ public class BookingController(AnimalService animalService) : Controller
     {
         var date = GetValidDateFromSession();
         var animals = await animalService.GetAnimalsWithAvailability(date);
-
-        // TODO: hier al validatie inbouwen voor x aantal kiezen en vip wel/niet?
-        
         var viewModel = new PickYourAnimalViewModel
         {
             Date = date, 

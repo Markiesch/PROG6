@@ -6,7 +6,7 @@
 <div class="progress-stepper mb-10 mt-8 uk-padding-left uk-padding-right">
     <ol class="flex items-center uk-flex-between">
         <li>
-            <a href="/" class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 1 ? "todo" : CurrentStep == 1 ? "active" : "finished")">
+            <div class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 1 ? "todo" : CurrentStep == 1 ? "active" : "finished")">
                 <div class="rounded-full uk-background-secondary text-primary w-8 h-8 flex items-center justify-center">
                     @if (CurrentStep <= 1)
                     {
@@ -18,10 +18,10 @@
                     }
                 </div>
                 <span class="text-primary uk-text-bold text-center">Kies een datum</span>
-            </a>
+            </div>
         </li>
         <li>
-            <a href="@(CurrentStep > 2 ? "/booking/pick-your-animal" : "")" class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 2 ? "todo" : CurrentStep == 2 ? "active" : "finished")">
+            <div class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 2 ? "todo" : CurrentStep == 2 ? "active" : "finished")">
                 <div class="rounded-full uk-background-secondary text-primary w-8 h-8 flex items-center justify-center">
                     @if (CurrentStep <= 2)
                     {
@@ -33,10 +33,10 @@
                     }
                 </div>
                 <span class="text-primary uk-text-bold text-center">Kies je beestjes</span>
-            </a>
+            </div>
         </li>
         <li>
-            <a href="@(CurrentStep > 3 ? "/booking/customer-details" : "")" class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 3 ? "todo" : CurrentStep == 3 ? "active" : "finished")">
+            <div class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 3 ? "todo" : CurrentStep == 3 ? "active" : "finished")">
                 <div class="rounded-full uk-background-secondary text-primary w-8 h-8 flex items-center justify-center">
                     @if (CurrentStep <= 3)
                     {
@@ -48,10 +48,10 @@
                     }
                 </div>
                 <span class="text-primary uk-text-bold text-center">Vul je gegevens in</span>
-            </a>
+            </div>
         </li>
         <li class="last-step">
-            <a class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 4 ? "todo" : CurrentStep == 4 ? "active" : "finished")">
+            <div class="flex uk-flex-column uk-flex-middle uk-flex-center @(CurrentStep < 4 ? "todo" : CurrentStep == 4 ? "active" : "finished")">
                 <div class="rounded-full uk-background-secondary text-primary w-8 h-8 flex items-center justify-center">
                     @if (CurrentStep <= 4)
                     {
@@ -63,7 +63,7 @@
                     }
                 </div>
                 <span class="text-primary uk-text-bold text-center">Bevestigen</span>
-            </a>
+            </div>
         </li>
     </ol>
 </div>
