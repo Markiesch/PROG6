@@ -6,24 +6,34 @@
     ViewData["Title"] = "Kies je beestje";
 }
 
-<component type="typeof(BookingStepper)" render-mode="ServerPrerendered" param-CurrentStep="2" param-Date="@Model.Date" />
+<component type="typeof(BookingStepper)" render-mode="ServerPrerendered" param-CurrentStep="2" />
 
 <div class="uk-flex uk-flex-wrap-reverse gap-4">
     <form asp-action="SaveSelectedAnimals" method="post" class="uk-card uk-card-default uk-width-expand">
         <div class="uk-card-header flex uk-align-center uk-flex-between">
-            <h1>Stap 2 - Kies je beestjes</h1>
+            <h1>
+                Stap 2 - Kies je beestjes
+                <button type="button" class="uk-icon-button" uk-tooltip="Bekijk regels" uk-toggle="target: #rules-modal">
+                    <uk-icon icon="info" height="20" width="20" stroke-width="2"></uk-icon>
+                </button>
+            </h1>
             <button class="uk-button uk-button-primary" type="submit">Volgende stap</button>
         </div>
         <div class="uk-card-body uk-flex uk-flex-wrap uk-flex-between -mb-4">
             @foreach (var animal in Model.Animals)
             {
-                <input type="checkbox" id="animal-@animal.Id" name="selectedAnimalIds" value="@animal.Id" class="uk-checkbox uk-hidden" @(animal.IsAvailable ? "disabled" : "")/>
+                <input type="checkbox" id="animal-@animal.Id" name="selectedAnimalIds" value="@animal.Id" class="uk-checkbox uk-hidden" @(!animal.IsAvailable ? "disabled" : "") />
                 <label class="uk-card uk-card-default !mb-4 checkbox-card @(animal.Type == AnimalType.Vip ? "checkbox-card--vip" : "")" for="animal-@animal.Id">
                     @if (animal.Type == AnimalType.Vip)
                     {
-                        <img src="/img/platinum-badge.png" height="48" width="48" alt="VIP" class="uk-position-top-left uk-position-z-index-high mt-1 ms-1"/>
+                        <div class="uk-position-top-left uk-position-z-index-high mt-1 ms-1" uk-tooltip="VIP">
+                            <img src="/img/platinum-badge.png" height="48" width="48" alt="VIP" />
+                        </div>
                     }
-                    <uk-icon icon="calendar-x" height="32" width="32" class="disabled-icon uk-text-danger uk-position-top-right uk-position-z-index-high mt-2 me-2"></uk-icon>
+                    <uk-icon icon="calendar-x"
+                             uk-tooltip="Dit beestje is niet beschikbaar op deze datum"
+                             height="32" width="32" 
+                             class="disabled-icon uk-text-danger uk-position-top-right uk-position-z-index-high mt-2 me-2"></uk-icon>
                     <svg class="check-icon uk-position-top-right uk-position-z-index-high mt-2 me-2" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22Z" fill="#4a6c14" stroke="#4a6c14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -38,7 +48,6 @@
                 </label>
             }
         </div>
-        <input type="hidden" name="date" value="@Model.Date" />
     </form>
     <div class="uk-width-1-4">
         <div class="uk-card uk-card-default" uk-sticky="offset: 25">
@@ -58,6 +67,38 @@
                     <p class="uk-text-italic uk-text-muted">Selecteer je beestjes in de lijst</p>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="uk-flex-top" uk-modal id="rules-modal">
+    <div class="uk-margin-auto-vertical uk-modal-dialog">
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title uk-text-bold">Keuze regels</h2>
+        </div>
+        <div class="uk-modal-body">
+            <h3 class="uk-text-bold">Combinaties</h3>
+            <ul class="uk-list uk-list-disc uk-margin-bottom">
+                <li uk-tooltip="Nom nom nom">Je mag geen beestje boeken met het type ‘Leeuw’ of ‘IJsbeer’ als je ook een beestje boekt van het type ‘Boerderijdier</li>
+            </ul>
+            <h3 class="uk-text-bold">Tijds- en seizoensgebonden</h3>
+            <ul class="uk-list uk-list-disc uk-margin-bottom">
+                <li uk-tooltip="Dieren in pak werken alleen doordeweeks">Je mag geen beestje boeken met de naam ‘Pinguïn’ in het weekend</li>
+                <li uk-tooltip="Brrrr – Veelste koud">Je mag geen beestje boeken van het type ‘Woestijn’ in de maanden oktober t/m februari</li>
+                <li uk-tooltip="Some People Are Worth Melting For. ~ Olaf">Je mag geen beestje boeken van het type ‘Sneeuw’ in de maanden juni t/m augustus</li>
+            </ul>
+            <h3 class="uk-text-bold">
+                Klantenkaarten
+            </h3>
+            <ul class="uk-list uk-list-disc">
+                <li>Klanten zonder klantenkaart mogen maximaal 3 dieren boeken</li>
+                <li>Klanten met een zilveren klantenkaart mogen 1 dier extra boeken</li>
+                <li>Klanten met een gouden kaart mogen zoveel dieren boeken als ze willen</li>
+                <li>Klanten met een platina kaart mogen daarnaast ook nog de VIP dieren boeken.</li>
+            </ul>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">Sluiten</button>
         </div>
     </div>
 </div>

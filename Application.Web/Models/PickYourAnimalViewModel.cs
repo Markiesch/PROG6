@@ -5,10 +5,7 @@ namespace Application.Web.Models;
 
 public class PickYourAnimalViewModel
 {
-    public required DateOnly Date { get; set; }
+    public required DateOnly Date { get; init; }
     
-    public required IEnumerable<AnimalDto> Animals { get; set; }
-    
-    // TODO: remove
-    public required List<Animal> UnavailableAnimals { get; set; }
+    public required IEnumerable<AnimalDto> Animals { get; init; }
 }

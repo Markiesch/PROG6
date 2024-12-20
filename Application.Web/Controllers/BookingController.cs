@@ -5,13 +5,41 @@ using Application.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Web.Controllers;
+[Route("/booking")]
 
 public class BookingController(AnimalService animalService) : Controller
 {
-    [HttpGet]
-    public async Task<IActionResult> PickYourAnimal(DateOnly? date)
+    [HttpGet("pick-your-animal/")]
+    public async Task<IActionResult> PickYourAnimal()
     {
-        // TODO: clear session
+        var date = GetValidDateFromSession();
+        var animals = await animalService.GetAnimalsWithAvailability(date);
+
+        // TODO: hier al validatie inbouwen voor x aantal kiezen en vip wel/niet?
+        
+        var viewModel = new PickYourAnimalViewModel
+        {
+            Date = date, 
+            Animals = animals
+        };
+        return View(viewModel);
+    }
+
+    [HttpGet("customer-details")]
+    public IActionResult CustomerDetails()
+    {
+        var viewModel = new CustomerDetailsViewModel()
+        {
+            Date = DateOnly.FromDateTime(DateTime.Now),
+            SelectedAnimals = []
+        };
+        return View(viewModel);
+    }
+    
+    [HttpPost("start-booking")]
+    public IActionResult StartBooking(DateOnly? date)
+    {
+        HttpContext.Session.Clear();
         
         if (date == null || date < DateOnly.FromDateTime(DateTime.Now))
         {
@@ -19,58 +47,45 @@ public class BookingController(AnimalService animalService) : Controller
             TempData["AlertDescription"] = "Je moet een datum in de toekomst selecteren om een boeking te starten.";
             return RedirectToAction("Index", "Home");
         }
-
-        var animals = await animalService.GetAnimalsWithAvailability((DateOnly)date);
         
-        // TODO: get unavailable animals from database
-        var unavailableAnimals = new List<Animal>
-        {
-       
-        };
-
-        // TODO: hier al validatie inbouwen voor x aantal kiezen en vip wel/niet?
-        var viewModel = new PickYourAnimalViewModel
-        {
-            Date = (DateOnly)date,
-            Animals = animals,
-            UnavailableAnimals = unavailableAnimals
-        };
-        return View(viewModel);
+        HttpContext.Session.SetString("BookingDate", date.ToString()!);
+        return RedirectToAction("PickYourAnimal");
     }
 
-    [HttpGet]
-    public IActionResult CustomerDetails()
+    [HttpPost("save-selected-animals")]
+    public IActionResult SaveSelectedAnimals(DateOnly date, List<int> selectedAnimalIds)
     {
-        var date = HttpContext.Session.GetString("BookingDate");
-        var selectedAnimalIds = JsonSerializer.Deserialize<List<int>>(HttpContext.Session.GetString("SelectedAnimalIds") ?? string.Empty);
-        var selectedAnimals = new List<Animal>(); // TODO: get animals from database by id
-        
-        if (date == null)
+        // validate
+        if (!ModelState.IsValid)
         {
-            TempData["Alert"] = "Selecteer een datum";
-            TempData["AlertDescription"] = "Je moet een datum selecteren om verder te gaan.";
-            return RedirectToAction("Index", "Home");
+            TempData["Alert"] = "Er is iets misgegaan";
+            TempData["AlertDescription"] = "Er is iets misgegaan bij het selecteren van de dieren. Probeer het opnieuw.";
+            return RedirectToAction("PickYourAnimal");
         }
-        if (selectedAnimalIds == null || selectedAnimalIds.Count == 0)
+        if (selectedAnimalIds.Count == 0)
         {
             TempData["Alert"] = "Selecteer een dier";
             TempData["AlertDescription"] = "Je moet minimaal één dier selecteren om verder te gaan.";
-            return RedirectToAction("PickYourAnimal", new { date });
+            return RedirectToAction("PickYourAnimal");
         }
-
-        var viewModel = new CustomerDetailsViewModel()
-        {
-            Date = DateOnly.Parse(date),
-            SelectedAnimals = selectedAnimals
-        };
-        return View(viewModel);
-    }
-
-    [HttpPost]
-    public IActionResult SaveSelectedAnimals(DateOnly date, List<int> selectedAnimalIds)
-    {
+        
+        // validate if selection is allowed based on rules
+        // TODO: ^
+        
         HttpContext.Session.SetString("BookingDate", date.ToString());
         HttpContext.Session.SetString("SelectedAnimalIds", JsonSerializer.Serialize(selectedAnimalIds));
         return RedirectToAction("CustomerDetails");
+    }
+
+    private DateOnly GetValidDateFromSession()
+    {
+        var date = HttpContext.Session.GetString("BookingDate");
+        if (date != null && DateTime.Parse(date).Date > DateTime.Now.Date) 
+            return DateOnly.Parse(date);
+        
+        TempData["Alert"] = "Selecteer een datum";
+        TempData["AlertDescription"] = "Je moet een datum in de toekomst selecteren om een boeking te starten.";
+        Response.Redirect("/");
+        return DateOnly.FromDateTime(DateTime.Now);
     }
 }
