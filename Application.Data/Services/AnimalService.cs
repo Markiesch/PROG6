@@ -6,9 +6,10 @@ namespace Application.Data.Services;
 
 public class AnimalService(MainContext mainContext)
 {
-    public async Task<List<AnimalDto>> GetAnimals()
+    public async Task<List<AnimalDto>> GetAnimals(string? query)
     {
         return await mainContext.Animals
+            .Where(x => string.IsNullOrEmpty(query) || x.Name.Contains(query))
             .Select(a => new AnimalDto
             {
                 Id = a.Id,

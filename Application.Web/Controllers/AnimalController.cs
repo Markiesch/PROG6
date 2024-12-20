@@ -11,9 +11,9 @@ namespace Application.Web.Controllers;
 public class AnimalController(AnimalService animalService) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? query)
     {
-        var animals = await animalService.GetAnimals();
+        var animals = await animalService.GetAnimals(query);
         var model = new AnimalListViewModel
         {
             Animals = animals
