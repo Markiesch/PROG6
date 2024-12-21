@@ -15,7 +15,7 @@ imageInput.addEventListener('input', updateAnimal);
 
 function updateAnimal() {
     animalName.innerText = nameInput.value;
-    animalType.innerText = typeInput.value;
+    animalType.innerText = typeInput.selectedOptions[0].text;
     animalPrice.innerText = priceInput.value;
     animalImage.src = imageInput.value;
 }
