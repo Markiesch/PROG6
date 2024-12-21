@@ -18,31 +18,45 @@
         </div>
         <div class="uk-card-body uk-margin-top">
             <form asp-action="Update" asp-route-id="@Model.Id" method="post">
-                <label for="name" class="uk-form-label">Naam*</label>
-                <input type="text" id="name" class="uk-input" asp-for="@Model.Name"/>
+                <div>
+                    <label for="name" class="uk-form-label">Naam*</label>
+                    <input type="text" id="name" class="uk-input" asp-for="@Model.Name"/>
+                    <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Name"></span>
+                </div>
 
                 @{
                     var types = Enum.GetValues<AnimalType>()
                         .Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToDisplayName() });
                 }
-                <label for="type" class="uk-form-label uk-margin-top uk-display-inline-block">Type*</label>
-                <select class="uk-select" id="type" asp-for="Type" asp-items="types"></select>
+                <div>
+                    <label for="type" class="uk-form-label uk-margin-top uk-display-inline-block">Type*</label>
+                    <select class="uk-select" id="type" asp-for="Type" asp-items="types"></select>
+                    <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Type"></span>
+                </div>
 
-                <label for="price" class="uk-form-label uk-margin-top uk-display-inline-block">Prijs*</label>
-                <input type="number" id="price" class="uk-input" asp-for="@Model.Price"/>
+                <div>
+                    <label for="price" class="uk-form-label uk-margin-top uk-display-inline-block">Prijs*</label>
+                    <input type="number" id="price" class="uk-input" asp-for="@Model.Price" step="0.01" />
+                    <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Price"></span>
+                </div>
 
-                <label for="image" class="uk-form-label uk-margin-top uk-display-inline-block">Afbeelding*</label>
-                <select id="image" class="uk-select" asp-for="@Model.Image">
-                    @foreach (var image in Directory.GetFiles(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "animals")))
-                    {
-                        var value = "/" + System.IO.Path.GetRelativePath("wwwroot", image).Replace('\\', '/');
-                        var text = System.IO.Path.GetFileNameWithoutExtension(image);
-                        <option value="@value">@text</option>
-                    }
-                </select>
+                <div>
+                    <label for="image" class="uk-form-label uk-margin-top uk-display-inline-block">Afbeelding*</label>
+                    <select id="image" class="uk-select" asp-for="@Model.Image">
+                        @foreach (var image in Directory.GetFiles(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "animals")))
+                        {
+                            var value = "/" + System.IO.Path.GetRelativePath("wwwroot", image).Replace('\\', '/');
+                            var text = System.IO.Path.GetFileNameWithoutExtension(image);
+                            <option value="@value">@text</option>
+                        }
+                    </select>
+                    <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Image"></span>
+                </div>
 
                 <div class="uk-flex uk-flex-between uk-margin-top">
-                    <button type="submit" asp-action="Delete" asp-route-id="@Model.Id" class="uk-button uk-button-danger">Verwijderen</button>
+                    <button type="submit" asp-action="Delete" asp-route-id="@Model.Id"
+                            class="uk-button uk-button-danger">Verwijderen
+                    </button>
 
                     <div class="uk-flex">
                         <a asp-action="Index" class="uk-button uk-button-default">Annuleren</a>
