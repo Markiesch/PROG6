@@ -18,6 +18,7 @@ public class AnimalUpdateViewModel
     
     [Required(ErrorMessage = "Prijs is verplicht")]
     [DataType(DataType.Currency)]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Prijs moet minimaal 0.01 zijn")]
     public required decimal Price { get; set; }
     
     [Required(ErrorMessage = "Afbeelding is verplicht")]
