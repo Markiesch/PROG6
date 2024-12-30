@@ -1,4 +1,4 @@
-namespace Application.Web.Helpers;
+namespace Application.Web.Rules;
 
 public class DiscountRules
 {

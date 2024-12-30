@@ -1,7 +1,9 @@
 using System.Text.Json;
+using Application.Data.Dto;
 using Application.Data.Models;
 using Application.Data.Services;
 using Application.Web.Models;
+using Application.Web.Rules;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Web.Controllers;
@@ -17,7 +19,8 @@ public class BookingController(AnimalService animalService) : Controller
         var viewModel = new PickYourAnimalViewModel
         {
             Date = date, 
-            Animals = animals
+            Animals = animals,
+            CustomerCard = null // TODO: Get customer card
         };
         return View(viewModel);
     }
@@ -49,6 +52,18 @@ public class BookingController(AnimalService animalService) : Controller
         return RedirectToAction("PickYourAnimal");
     }
 
+    [HttpPost("validate-animal-selection")]
+    public async Task<JsonResult> ValidateAnimalSelection(AnimalSelectionRequest request)
+    {
+        var animalToAdd = await animalService.GetAnimalById(request.AnimalToAddId);
+        var selectedAnimals = await animalService.GetAnimalsByIds(request.SelectedAnimalIds);
+        var date = request.Date;
+        var customerCard = request.CustomerCard != null ? Enum.Parse<CustomerCardType>(request.CustomerCard) : (CustomerCardType?)null;
+        
+        var isValid = animalToAdd != null && BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard);
+        return Json(new { isValid });
+    }
+
     [HttpPost("save-selected-animals")]
     public IActionResult SaveSelectedAnimals(DateOnly date, List<int> selectedAnimalIds)
     {
@@ -59,16 +74,14 @@ public class BookingController(AnimalService animalService) : Controller
             TempData["AlertDescription"] = "Er is iets misgegaan bij het selecteren van de dieren. Probeer het opnieuw.";
             return RedirectToAction("PickYourAnimal");
         }
+
         if (selectedAnimalIds.Count == 0)
         {
             TempData["Alert"] = "Selecteer een dier";
             TempData["AlertDescription"] = "Je moet minimaal één dier selecteren om verder te gaan.";
             return RedirectToAction("PickYourAnimal");
         }
-        
-        // validate if selection is allowed based on rules
-        // TODO: ^
-        
+
         HttpContext.Session.SetString("BookingDate", date.ToString());
         HttpContext.Session.SetString("SelectedAnimalIds", JsonSerializer.Serialize(selectedAnimalIds));
         return RedirectToAction("CustomerDetails");

@@ -1,11 +1,32 @@
+using Application.Data.Dto;
 using Application.Data.Models;
 
-namespace Application.Web.Helpers;
+namespace Application.Web.Rules;
 
-public class BookingRules
+public static class BookingRules
 {
+    // Main validation method
+    public static bool Validate(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, DateOnly date,
+        CustomerCardType? customerCard)
+    {
+        bool allowedSelected = NoLionOrPolarBearWithFarmAnimal(animalToAdd, selectedAnimals) &&
+                               NoPenguinOnWeekend(animalToAdd, date) &&
+                               NoDesertAnimalOctToFeb(animalToAdd, date) &&
+                               NoSnowAnimalJunToAug(animalToAdd, date);
+        
+        bool allowedCustomerCard = customerCard switch
+        {
+            null => IsAllowedForNoCard(animalToAdd, selectedAnimals),
+            CustomerCardType.Silver => IsAllowedForSilverCard(animalToAdd, selectedAnimals),
+            CustomerCardType.Gold => IsAllowedForGoldCard(animalToAdd),
+            _ => customerCard != CustomerCardType.Platinum || IsAllowedForPlatinumCard(animalToAdd)
+        };
+        
+        return allowedSelected && allowedCustomerCard;
+    }
+    
     // Combinations
-    public bool NoLionOrPolarBearWithFarmAnimal(Animal animalToAdd, List<Animal> selectedAnimals)
+    private static bool NoLionOrPolarBearWithFarmAnimal(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals)
     {
         return !selectedAnimals.Any(
                    a => a.Name.Equals("leeuw", StringComparison.CurrentCultureIgnoreCase) 
@@ -14,44 +35,44 @@ public class BookingRules
     }
     
     // Time and season based
-    public bool NoPenguinOnWeekend(Animal animalToAdd, DateOnly date)
+    private static bool NoPenguinOnWeekend(AnimalDto animalToAdd, DateOnly date)
     {
         return !animalToAdd.Name.Equals(
             "pinguin", StringComparison.CurrentCultureIgnoreCase) 
                || (date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday);
     }
     
-    public bool NoDesertAnimalOctToFeb(Animal animalToAdd, DateOnly date)
+    private static bool NoDesertAnimalOctToFeb(AnimalDto animalToAdd, DateOnly date)
     {
         return animalToAdd.Type != AnimalType.Desert 
                || (date.Month >= 3 && date.Month <= 9);
     }
     
-    public bool NoSnowAnimalJunToAug(Animal animalToAdd, DateOnly date)
+    private static bool NoSnowAnimalJunToAug(AnimalDto animalToAdd, DateOnly date)
     {
         return animalToAdd.Type != AnimalType.Snow 
                || (date.Month >= 9 && date.Month <= 5);
     }
     
     // Customer card based
-    public bool IsAllowedForNoCard(Animal animalToAdd, List<Animal> selectedAnimals)
+    private static bool IsAllowedForNoCard(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals)
     {
         return animalToAdd.Type != AnimalType.Vip
             && selectedAnimals.Count < 3;
     }
 
-    public bool IsAllowedForSilverCard(Animal animalToAdd, List<Animal> selectedAnimals)
+    private static bool IsAllowedForSilverCard(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals)
     {
         return animalToAdd.Type != AnimalType.Vip
                && selectedAnimals.Count < 4;
     }
 
-    public bool IsAllowedForGoldCard(Animal animalToAdd)
+    private static bool IsAllowedForGoldCard(AnimalDto animalToAdd)
     {
         return animalToAdd.Type != AnimalType.Vip;
     }
     
-    public bool IsAllowedForPlatinumCard(Animal animalToAdd)
+    private static bool IsAllowedForPlatinumCard(AnimalDto animalToAdd)
     {
         return true;
     }

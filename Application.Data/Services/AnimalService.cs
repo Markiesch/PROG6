@@ -31,7 +31,7 @@ public class AnimalService(MainContext mainContext)
                 Type = a.Type,
                 Price = a.Price,
                 Image = a.Image,
-                IsAvailable = a.BookingDetails.All(bd => DateOnly.FromDateTime(bd.Booking.Date) != date)
+                IsAvailable = !a.BookingDetails.Any(bd => DateOnly.FromDateTime(bd.Booking.Date) == date)
             })
             .ToListAsync();
     }
@@ -50,5 +50,21 @@ public class AnimalService(MainContext mainContext)
                 IsAvailable = true
             })
             .FirstOrDefaultAsync();
+    }
+    
+    public async Task<List<AnimalDto>> GetAnimalsByIds(List<int> ids)
+    {
+        return await mainContext.Animals
+            .Where(a => ids.Contains(a.Id))
+            .Select(a => new AnimalDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Type = a.Type,
+                Price = a.Price,
+                Image = a.Image,
+                IsAvailable = true
+            })
+            .ToListAsync();
     }
 }

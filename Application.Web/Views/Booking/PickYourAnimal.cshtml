@@ -19,34 +19,36 @@
             </h1>
             <button class="uk-button uk-button-primary" type="submit">Volgende stap</button>
         </div>
-        <div class="uk-card-body uk-flex uk-flex-wrap uk-flex-between -mb-4">
-            @foreach (var animal in Model.Animals)
-            {
-                <input type="checkbox" id="animal-@animal.Id" name="selectedAnimalIds" value="@animal.Id" class="uk-checkbox uk-hidden" @(!animal.IsAvailable ? "disabled" : "") />
-                <label class="uk-card uk-card-default !mb-4 checkbox-card @(animal.Type == AnimalType.Vip ? "checkbox-card--vip" : "")" for="animal-@animal.Id">
-                    @if (animal.Type == AnimalType.Vip)
-                    {
-                        <div class="uk-position-top-left uk-position-z-index-high mt-1 ms-1" uk-tooltip="VIP">
-                            <img src="/img/platinum-badge.png" height="48" width="48" alt="VIP" />
+        <div class="uk-card-body" id="animalsFormBody">
+            <div class="uk-flex uk-flex-wrap uk-flex-between -mb-4">
+                @foreach (var animal in Model.Animals)
+                {
+                    <input type="checkbox" id="animal-@animal.Id" name="selectedAnimalIds" value="@animal.Id" class="uk-checkbox uk-hidden" @(!animal.IsAvailable ? "disabled" : "") />
+                    <label class="uk-card uk-card-default !mb-4 checkbox-card @(animal.Type == AnimalType.Vip ? "checkbox-card--vip" : "")" for="animal-@animal.Id">
+                        @if (animal.Type == AnimalType.Vip)
+                        {
+                            <div class="uk-position-top-left uk-position-z-index-high mt-1 ms-1" uk-tooltip="VIP">
+                                <img src="/img/platinum-badge.png" height="48" width="48" alt="VIP" />
+                            </div>
+                        }
+                        <uk-icon icon="calendar-x"
+                                 uk-tooltip="Dit beestje is niet beschikbaar op deze datum"
+                                 height="32" width="32" 
+                                 class="disabled-icon uk-text-danger uk-position-top-right uk-position-z-index-high mt-2 me-2"></uk-icon>
+                        <svg class="check-icon uk-position-top-right uk-position-z-index-high mt-2 me-2" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22Z" fill="#4a6c14" stroke="#4a6c14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <div class="uk-card-body">
+                            <img src="@animal.Image" alt="@animal.Name" class="uk-height-small"/>
+                            <div class="uk-flex uk-flex-between uk-align-center uk-text-large uk-margin-top">
+                                <h3 class="uk-text-bolder">@animal.Name</h3>
+                                <p class="uk-text-bold text-muted-foreground">&euro;@animal.Price</p>
+                            </div>
                         </div>
-                    }
-                    <uk-icon icon="calendar-x"
-                             uk-tooltip="Dit beestje is niet beschikbaar op deze datum"
-                             height="32" width="32" 
-                             class="disabled-icon uk-text-danger uk-position-top-right uk-position-z-index-high mt-2 me-2"></uk-icon>
-                    <svg class="check-icon uk-position-top-right uk-position-z-index-high mt-2 me-2" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22Z" fill="#4a6c14" stroke="#4a6c14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <div class="uk-card-body">
-                        <img src="@animal.Image" alt="@animal.Name" class="uk-height-small"/>
-                        <div class="uk-flex uk-flex-between uk-align-center uk-text-large uk-margin-top">
-                            <h3 class="uk-text-bolder">@animal.Name</h3>
-                            <p class="uk-text-bold text-muted-foreground">&euro;@animal.Price</p>
-                        </div>
-                    </div>
-                </label>
-            }
+                    </label>
+                }
+            </div>
         </div>
     </form>
     <div class="uk-width-1-4">
@@ -102,3 +104,60 @@
         </div>
     </div>
 </div>
+
+@{
+    var customerCard = Model.CustomerCard switch
+    {
+        CustomerCardType.Silver => CustomerCardType.Silver.ToString(),
+        CustomerCardType.Gold => CustomerCardType.Gold.ToString(),
+        CustomerCardType.Platinum => CustomerCardType.Platinum.ToString(),
+        _ => "null"
+    };
+}
+
+@section Scripts {
+    <script>
+        // Create the alert element
+        const alert = document.createElement('div');
+        alert.className = 'uk-alert uk-alert-danger uk-margin-bottom';
+        alert.setAttribute('uk-alert', '');
+        alert.setAttribute('animation', '1000');
+        const closeButton = document.createElement('a');
+        closeButton.href = '#';
+        closeButton.className = 'uk-alert-close';
+        closeButton.setAttribute('uk-close', '');
+        alert.appendChild(closeButton);
+        const description = document.createElement('div');
+        description.className = 'uk-alert-description';
+        description.textContent = 'Het is niet mogelijk om dit beestje te selecteren. Zie de regels (i) voor meer informatie.';
+        alert.appendChild(description);
+
+        document.querySelectorAll('input[name="selectedAnimalIds"]').forEach(input => {
+            input.addEventListener('change', function () {
+                const selectedAnimalIds = Array.from(document.querySelectorAll('input[name="selectedAnimalIds"]:checked')).map(input => input.value);
+
+                fetch('/booking/validate-animal-selection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        animalId: this.value,
+                        selectedAnimalIds: selectedAnimalIds,
+                        date: @Model.Date,
+                        customerCard: @customerCard
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.isValid) {
+                            document.getElementById('animalsFormBody').prepend(alert);
+                            this.checked = false;
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    
+    </script>
+}
