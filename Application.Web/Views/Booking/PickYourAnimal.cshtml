@@ -121,43 +121,45 @@
         const alert = document.createElement('div');
         alert.className = 'uk-alert uk-alert-danger uk-margin-bottom';
         alert.setAttribute('uk-alert', '');
-        alert.setAttribute('animation', '1000');
-        const closeButton = document.createElement('a');
-        closeButton.href = '#';
-        closeButton.className = 'uk-alert-close';
-        closeButton.setAttribute('uk-close', '');
-        alert.appendChild(closeButton);
-        const description = document.createElement('div');
-        description.className = 'uk-alert-description';
-        description.textContent = 'Het is niet mogelijk om dit beestje te selecteren. Zie de regels (i) voor meer informatie.';
-        alert.appendChild(description);
-
+        alert.innerHTML = `<div class="uk-alert-title">Het is niet mogelijk om dit beestje te selecteren. Zie de regels (i)</div>`; 
+    
         document.querySelectorAll('input[name="selectedAnimalIds"]').forEach(input => {
             input.addEventListener('change', function () {
+                if (!this.checked) return;
+                document.body.classList.add('loading');
+    
                 const selectedAnimalIds = Array.from(document.querySelectorAll('input[name="selectedAnimalIds"]:checked')).map(input => input.value);
-
+    
                 fetch('/booking/validate-animal-selection', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        animalId: this.value,
-                        selectedAnimalIds: selectedAnimalIds,
-                        date: @Model.Date,
-                        customerCard: @customerCard
+                        AnimalToAddId: parseInt(this.value),
+                        SelectedAnimalIds: selectedAnimalIds.map(id => parseInt(id)),
+                        Date: @Model.Date.ToString("yyyy-MM-dd"),
+                        CustomerCard: @customerCard
                     })
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (!data.isValid) {
-                            document.getElementById('animalsFormBody').prepend(alert);
+                            alert.innerHTML = `
+                                <div class="uk-alert-title">Het is niet mogelijk om dit beestje te selecteren. <button type="button" uk-toggle="target: #rules-modal"><uk-icon class="uk-display-inline-block" icon="info"></uk-icon></button></div>
+                                <div class="uk-alert-description">${data.reason}.</div>
+                            `;
+                            document.getElementById('animalsFormBody').prepend(alert);                            
                             this.checked = false;
                         }
                     })
-                    .catch(error => console.error('Error:', error));
+                    .catch(() => {
+                        alert.innerHTML = `<div class="uk-alert-title">Er is iets misgegaan. Probeer het later opnieuw.</div>`;
+                        document.getElementById('animalsFormBody').prepend(alert);
+                        this.checked = false;
+                    })
+                    .finally(() => document.body.classList.remove('loading'));
             });
         });
-    
     </script>
 }

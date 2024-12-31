@@ -53,15 +53,17 @@ public class BookingController(AnimalService animalService) : Controller
     }
 
     [HttpPost("validate-animal-selection")]
-    public async Task<JsonResult> ValidateAnimalSelection(AnimalSelectionRequest request)
+    public async Task<JsonResult> ValidateAnimalSelection([FromBody] AnimalSelectionRequest request)
     {
+        // TODO: AnimalSelectionRequest is null
         var animalToAdd = await animalService.GetAnimalById(request.AnimalToAddId);
         var selectedAnimals = await animalService.GetAnimalsByIds(request.SelectedAnimalIds);
         var date = request.Date;
         var customerCard = request.CustomerCard != null ? Enum.Parse<CustomerCardType>(request.CustomerCard) : (CustomerCardType?)null;
         
-        var isValid = animalToAdd != null && BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard);
-        return Json(new { isValid });
+        return animalToAdd == null 
+            ? Json(new { isValid = false, reason = "Geselecteerde dier niet gevonden" }) 
+            : Json(BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard));
     }
 
     [HttpPost("save-selected-animals")]

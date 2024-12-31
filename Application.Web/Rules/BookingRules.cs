@@ -6,23 +6,44 @@ namespace Application.Web.Rules;
 public static class BookingRules
 {
     // Main validation method
-    public static bool Validate(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, DateOnly date,
+    public static JsonContent Validate(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, DateOnly date,
         CustomerCardType? customerCard)
     {
-        bool allowedSelected = NoLionOrPolarBearWithFarmAnimal(animalToAdd, selectedAnimals) &&
-                               NoPenguinOnWeekend(animalToAdd, date) &&
-                               NoDesertAnimalOctToFeb(animalToAdd, date) &&
-                               NoSnowAnimalJunToAug(animalToAdd, date);
-        
-        bool allowedCustomerCard = customerCard switch
+        var result = new { isValid = true, reason = "" };
+
+        if (!NoLionOrPolarBearWithFarmAnimal(animalToAdd, selectedAnimals))
         {
-            null => IsAllowedForNoCard(animalToAdd, selectedAnimals),
-            CustomerCardType.Silver => IsAllowedForSilverCard(animalToAdd, selectedAnimals),
-            CustomerCardType.Gold => IsAllowedForGoldCard(animalToAdd),
-            _ => customerCard != CustomerCardType.Platinum || IsAllowedForPlatinumCard(animalToAdd)
-        };
-        
-        return allowedSelected && allowedCustomerCard;
+            result = new { isValid = false, reason = "Je mag geen beestje boeken met het type 'Leeuw' of 'IJsbeer' als je ook een beestje boekt van het type 'Boerderijdier'" };
+        }
+        else if (!NoPenguinOnWeekend(animalToAdd, date))
+        {
+            result = new { isValid = false, reason = "Je mag geen beestje boeken met de naam 'Pinguïn' in het weekend" };
+        }
+        else if (!NoDesertAnimalOctToFeb(animalToAdd, date))
+        {
+            result = new { isValid = false, reason = "Je mag geen beestje boeken van het type 'Woestijn' in de maanden oktober t/m februari" };
+        }
+        else if (!NoSnowAnimalJunToAug(animalToAdd, date))
+        {
+            result = new { isValid = false, reason = "Je mag geen beestje boeken van het type 'Sneeuw' in de maanden juni t/m augustus" };
+        }
+        else
+        {
+            result = customerCard switch
+            {
+                null when !IsAllowedForNoCard(animalToAdd, selectedAnimals) 
+                    => new { isValid = false, reason = "Klanten zonder klantenkaart mogen maximaal 3 dieren boeken" },
+                CustomerCardType.Silver when !IsAllowedForSilverCard(animalToAdd, selectedAnimals) 
+                    => new { isValid = false, reason = "Klanten met een zilveren klantenkaart mogen 1 dier extra boeken" },
+                CustomerCardType.Gold when !IsAllowedForGoldCard(animalToAdd) 
+                    => new { isValid = false, reason = "Klanten met een gouden kaart mogen zoveel dieren boeken als ze willen" },
+                CustomerCardType.Platinum when !IsAllowedForPlatinumCard(animalToAdd) 
+                    => new { isValid = false, reason = "Klanten met een platina kaart mogen daarnaast ook nog de VIP dieren boeken." },
+                _ => result
+            };
+        }
+
+        return JsonContent.Create(result);
     }
     
     // Combinations
