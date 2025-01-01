@@ -53,26 +53,30 @@ public class BookingController(AnimalService animalService) : Controller
     }
 
     [HttpPost("validate-animal-selection")]
-    public async Task<JsonResult> ValidateAnimalSelection([FromBody] dynamic request)
+    public async Task<bool> ValidateAnimalSelection([FromBody] dynamic request)
     {
-        var result = new { isValid = true, reason = "" };
-        
         var jsonElement = (JsonElement)request;
         var animalToAddIdFromJson = jsonElement.GetProperty("animalToAddId").GetInt32();
         var selectedAnimalIdsFromJson = jsonElement.GetProperty("selectedAnimalIds").EnumerateArray().Select(x => x.GetInt32()).ToList();
         var dateFromJson = jsonElement.GetProperty("date").GetString();
         var customerCardFromJson = jsonElement.GetProperty("customerCard").GetString();
 
-        if (dateFromJson == null) return new JsonResult(new { isValid = false, reason = "Datum niet gevonden" });
+        if (dateFromJson == null) return false;
         
         var animalToAdd = await animalService.GetAnimalById(animalToAddIdFromJson);
         var selectedAnimals = await animalService.GetAnimalsByIds(selectedAnimalIdsFromJson);
         var date = DateOnly.Parse(dateFromJson);
         var customerCard = customerCardFromJson != null ? Enum.Parse<CustomerCardType>(customerCardFromJson) : (CustomerCardType?)null;
+
+        if (animalToAdd == null) return false;
+        var validation = await BookingRules
+            .Validate(animalToAdd, selectedAnimals, date, customerCard)
+            .ReadFromJsonAsync<dynamic>();
         
-        return animalToAdd == null
-            ? new JsonResult(new { isValid = false, reason = "Geselecteerde dier niet gevonden" }) 
-            : new JsonResult(new { isValid = BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard) });
+        if (validation == null) return false;
+        
+        TempData["ValidationMessage"] = validation.reason;
+        return validation.isValid;
     }
 
     [HttpPost("save-selected-animals")]
