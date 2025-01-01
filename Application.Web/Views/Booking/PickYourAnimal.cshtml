@@ -142,30 +142,18 @@
                         customerCard: @customerCard
                     })
                 })
-                    .then(response => {
-                        let data;
-                        try {
-                            data = JSON.parse(response);
-                        } catch (e) {
-                            console.error('Invalid JSON:', response);
-                            console.log('response.body:', response.body);
-                            throw new Error('Invalid JSON response');
-                        }
-                        return data;
-                    })
+                    .then(response => response.json())
                     .then(data => {
-                        console.log(data);
-                        if (!data.isValid) {
+                        if (!data) {
                             alert.innerHTML = `
                                 <div class="uk-alert-title">Het is niet mogelijk om dit beestje te selecteren. <button type="button" uk-toggle="target: #rules-modal"><uk-icon class="uk-display-inline-block" icon="info"></uk-icon></button></div>
-                                <div class="uk-alert-description">${data.reason}.</div>
+                                <div class="uk-alert-description">Bekijk de regels via het info-icoon</div>
                             `;
                             document.getElementById('animalsFormBody').prepend(alert);                            
                             this.checked = false;
                         }
                     })
-                    .catch(e => {
-                        console.log(e);
+                    .catch(() => {
                         alert.innerHTML = `<div class="uk-alert-title">Er is iets misgegaan. Probeer het later opnieuw.</div>`;
                         document.getElementById('animalsFormBody').prepend(alert);
                         this.checked = false;

@@ -60,23 +60,15 @@ public class BookingController(AnimalService animalService) : Controller
         var selectedAnimalIdsFromJson = jsonElement.GetProperty("selectedAnimalIds").EnumerateArray().Select(x => x.GetInt32()).ToList();
         var dateFromJson = jsonElement.GetProperty("date").GetString();
         var customerCardFromJson = jsonElement.GetProperty("customerCard").GetString();
-
+        
         if (dateFromJson == null) return false;
         
         var animalToAdd = await animalService.GetAnimalById(animalToAddIdFromJson);
         var selectedAnimals = await animalService.GetAnimalsByIds(selectedAnimalIdsFromJson);
         var date = DateOnly.Parse(dateFromJson);
         var customerCard = customerCardFromJson != null ? Enum.Parse<CustomerCardType>(customerCardFromJson) : (CustomerCardType?)null;
-
-        if (animalToAdd == null) return false;
-        var validation = await BookingRules
-            .Validate(animalToAdd, selectedAnimals, date, customerCard)
-            .ReadFromJsonAsync<dynamic>();
         
-        if (validation == null) return false;
-        
-        TempData["ValidationMessage"] = validation.reason;
-        return validation.isValid;
+        return animalToAdd != null && BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard);
     }
 
     [HttpPost("save-selected-animals")]
