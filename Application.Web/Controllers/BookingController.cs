@@ -53,17 +53,26 @@ public class BookingController(AnimalService animalService) : Controller
     }
 
     [HttpPost("validate-animal-selection")]
-    public async Task<JsonResult> ValidateAnimalSelection([FromBody] AnimalSelectionRequest request)
+    public async Task<JsonResult> ValidateAnimalSelection([FromBody] dynamic request)
     {
-        // TODO: AnimalSelectionRequest is null
-        var animalToAdd = await animalService.GetAnimalById(request.AnimalToAddId);
-        var selectedAnimals = await animalService.GetAnimalsByIds(request.SelectedAnimalIds);
-        var date = request.Date;
-        var customerCard = request.CustomerCard != null ? Enum.Parse<CustomerCardType>(request.CustomerCard) : (CustomerCardType?)null;
+        var result = new { isValid = true, reason = "" };
         
-        return animalToAdd == null 
-            ? Json(new { isValid = false, reason = "Geselecteerde dier niet gevonden" }) 
-            : Json(BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard));
+        var jsonElement = (JsonElement)request;
+        var animalToAddIdFromJson = jsonElement.GetProperty("animalToAddId").GetInt32();
+        var selectedAnimalIdsFromJson = jsonElement.GetProperty("selectedAnimalIds").EnumerateArray().Select(x => x.GetInt32()).ToList();
+        var dateFromJson = jsonElement.GetProperty("date").GetString();
+        var customerCardFromJson = jsonElement.GetProperty("customerCard").GetString();
+
+        if (dateFromJson == null) return new JsonResult(new { isValid = false, reason = "Datum niet gevonden" });
+        
+        var animalToAdd = await animalService.GetAnimalById(animalToAddIdFromJson);
+        var selectedAnimals = await animalService.GetAnimalsByIds(selectedAnimalIdsFromJson);
+        var date = DateOnly.Parse(dateFromJson);
+        var customerCard = customerCardFromJson != null ? Enum.Parse<CustomerCardType>(customerCardFromJson) : (CustomerCardType?)null;
+        
+        return animalToAdd == null
+            ? new JsonResult(new { isValid = false, reason = "Geselecteerde dier niet gevonden" }) 
+            : new JsonResult(new { isValid = BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard) });
     }
 
     [HttpPost("save-selected-animals")]
