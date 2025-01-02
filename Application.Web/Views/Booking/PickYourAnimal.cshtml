@@ -125,6 +125,7 @@
     
         document.querySelectorAll('input[name="selectedAnimalIds"]').forEach(input => {
             input.addEventListener('change', function () {
+                alert.remove();
                 if (!this.checked) return;
                 document.body.classList.add('loading');
     
