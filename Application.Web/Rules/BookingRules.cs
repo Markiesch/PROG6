@@ -10,7 +10,6 @@ public static class BookingRules
         CustomerCardType? customerCard, out string errorMessage)
     {
         errorMessage = string.Empty;
-        
         return NoLionOrPolarBearWithFarmAnimal(animalToAdd, selectedAnimals, out errorMessage)
                && NoPenguinOnWeekend(animalToAdd, date, out errorMessage)
                && NoDesertAnimalOctToFeb(animalToAdd, date, out errorMessage)
@@ -89,6 +88,7 @@ public static class BookingRules
         }
         return isValid;
     }
+    
     private static bool IsAllowedForNoCard(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, out string errorMessage)
     {
         errorMessage = "Klanten zonder klantenkaart mogen maximaal 3 dieren boeken, behalve dieren van het type VIP";

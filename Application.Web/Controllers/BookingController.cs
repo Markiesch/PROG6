@@ -55,22 +55,26 @@ public class BookingController(AnimalService animalService) : Controller
     [HttpPost("validate-animal-selection")]
     public async Task<JsonResult> ValidateAnimalSelection([FromBody] dynamic request)
     {
+        // Parse request
         var jsonElement = (JsonElement)request;
-        var animalToAddIdFromJson = jsonElement.GetProperty("animalToAddId").GetInt32();
-        var selectedAnimalIdsFromJson = jsonElement.GetProperty("selectedAnimalIds").EnumerateArray().Select(x => x.GetInt32()).ToList();
-        var dateFromJson = jsonElement.GetProperty("date").GetString();
-        var customerCardFromJson = jsonElement.GetProperty("customerCard").GetString();
-        
-        if (dateFromJson == null) return Json(new { isValid = false, errorMessage = "Ongeldige datum" });
-        
-        var animalToAdd = await animalService.GetAnimalById(animalToAddIdFromJson);
-        var selectedAnimals = await animalService.GetAnimalsByIds(selectedAnimalIdsFromJson);
-        var date = DateOnly.Parse(dateFromJson);
-        var customerCard = customerCardFromJson != null ? Enum.Parse<CustomerCardType>(customerCardFromJson) : (CustomerCardType?)null;
-        
+        var animalToAddId = jsonElement.GetProperty("animalToAddId").GetInt32();
+        var selectedAnimalIds = jsonElement.GetProperty("selectedAnimalIds").EnumerateArray().Select(x => x.GetInt32()).ToList();
+        var dateString = jsonElement.GetProperty("date").GetString();
+        var customerCardString = jsonElement.GetProperty("customerCard").GetString();
+
+        if (dateString == null) 
+            return Json(new { isValid = false, errorMessage = "Ongeldige datum" });
+
+        // Get data from services
+        var animalToAdd = await animalService.GetAnimalById(animalToAddId);
+        var selectedAnimals = await animalService.GetAnimalsByIds(selectedAnimalIds);
+        var date = DateOnly.Parse(dateString);
+        var customerCard = customerCardString != null ? Enum.Parse<CustomerCardType>(customerCardString) : (CustomerCardType?)null;
+
+        // Validate selection
         string errorMessage = string.Empty;
-        bool isValid = animalToAdd != null &&
-                       BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard, out errorMessage); 
+        var isValid = animalToAdd != null && BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard, out errorMessage);
+
         return Json(new { isValid, errorMessage });
     }
 
