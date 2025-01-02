@@ -53,7 +53,7 @@ public class BookingController(AnimalService animalService) : Controller
     }
 
     [HttpPost("validate-animal-selection")]
-    public async Task<bool> ValidateAnimalSelection([FromBody] dynamic request)
+    public async Task<JsonResult> ValidateAnimalSelection([FromBody] dynamic request)
     {
         var jsonElement = (JsonElement)request;
         var animalToAddIdFromJson = jsonElement.GetProperty("animalToAddId").GetInt32();
@@ -61,14 +61,17 @@ public class BookingController(AnimalService animalService) : Controller
         var dateFromJson = jsonElement.GetProperty("date").GetString();
         var customerCardFromJson = jsonElement.GetProperty("customerCard").GetString();
         
-        if (dateFromJson == null) return false;
+        if (dateFromJson == null) return Json(new { isValid = false, errorMessage = "Ongeldige datum" });
         
         var animalToAdd = await animalService.GetAnimalById(animalToAddIdFromJson);
         var selectedAnimals = await animalService.GetAnimalsByIds(selectedAnimalIdsFromJson);
         var date = DateOnly.Parse(dateFromJson);
         var customerCard = customerCardFromJson != null ? Enum.Parse<CustomerCardType>(customerCardFromJson) : (CustomerCardType?)null;
         
-        return animalToAdd != null && BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard);
+        string errorMessage = string.Empty;
+        bool isValid = animalToAdd != null &&
+                       BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard, out errorMessage); 
+        return Json(new { isValid, errorMessage });
     }
 
     [HttpPost("save-selected-animals")]

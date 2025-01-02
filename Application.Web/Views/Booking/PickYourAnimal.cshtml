@@ -144,10 +144,10 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        if (!data) {
+                        if (!data.isValid) {
                             alert.innerHTML = `
                                 <div class="uk-alert-title">Het is niet mogelijk om dit beestje te selecteren. <button type="button" uk-toggle="target: #rules-modal"><uk-icon class="uk-display-inline-block" icon="info"></uk-icon></button></div>
-                                <div class="uk-alert-description">Bekijk de regels via het info-icoon</div>
+                                <div class="uk-alert-description">${data.errorMessage}</div>
                             `;
                             document.getElementById('animalsFormBody').prepend(alert);                            
                             this.checked = false;
