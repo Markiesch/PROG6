@@ -22,7 +22,7 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
             .ToListAsync();
     } 
     
-    public async Task<IEnumerable<BookingDto>?> GetBookings(int id, string? query)
+    public async Task<IEnumerable<BookingDto>?> GetBookingsOfAnimal(int id, string? query)
     {
         var animal = await GetAnimal(id);
         if (animal == null) return null;

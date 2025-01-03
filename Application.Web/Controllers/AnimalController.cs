@@ -25,7 +25,7 @@ public class AnimalController(AnimalService animalService) : Controller
     [HttpGet("{id:int}/details")]
     public async Task<IActionResult> Details(int id, string? query)
     {
-        var bookings = await animalService.GetBookings(id, query);
+        var bookings = await animalService.GetBookingsOfAnimal(id, query);
         if (bookings == null)
         {
             return NotFound();
