@@ -54,8 +54,12 @@
                 </div>
 
                 <div class="uk-flex uk-flex-between uk-margin-top">
-                    <button type="submit" asp-action="Delete" asp-route-id="@Model.Id"
-                            class="uk-button uk-button-danger">Verwijderen
+                    <button
+                        class="uk-button uk-button-danger uk-margin-small-right"
+                        type="button"
+                        uk-toggle="target: #modal-delete"
+                    >
+                        Verwijderen
                     </button>
 
                     <div class="uk-flex">
@@ -81,6 +85,24 @@
                 <img id="animal-image" src="@Model.Image" alt="">
             </div>
         </div>
+    </div>
+</div>
+
+<div id="modal-delete" uk-modal>
+    <div class="uk-margin-auto-vertical uk-modal-dialog">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title">Actie bevestigen</h2>
+        </div>
+        <div class="uk-modal-body">
+            <p>Weet je zeker dat je dit dier wilt verwijderen?</p>
+        </div>
+        <form class="uk-modal-footer uk-text-right" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+            <button class="uk-modal-close uk-button uk-button-default" type="button">
+                Annuleren
+            </button>
+            <button class="uk-button uk-button-danger" type="submit">Verwijderen</button>
+        </form>
     </div>
 </div>
 
