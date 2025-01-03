@@ -54,6 +54,8 @@
                     <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Image"></span>
                 </div>
 
+                @Html.ValidationSummary(true, string.Empty, new { @class = "uk-text-danger" })
+                
                 <div class="uk-flex uk-flex-right uk-margin-top">
                     <a asp-action="Index" class="uk-button uk-button-default">Annuleren</a>
                     <button type="submit" class="uk-button uk-button-primary uk-margin-xsmall-left">Opslaan</button>
@@ -79,4 +81,6 @@
     </div>
 </div>
 
-<script src="/js/animal.js"></script>
+@section Scripts {
+    <script src="/js/animal.js"></script>
+}
