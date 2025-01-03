@@ -13,7 +13,7 @@
                 <span class="uk-form-icon">
                     <uk-icon icon="search"></uk-icon>
                 </span>
-                <input class="uk-input" name="query" type="text" placeholder="zoek een beestje..." value="@Context.Request.Query["query"]" />
+                <input class="uk-input" name="query" type="text" placeholder="Zoek een beestje..." value="@Context.Request.Query["query"]" />
             </div>
             <button class="uk-button uk-button-primary">Zoeken</button>
         </form>
@@ -49,9 +49,9 @@
                         asp-action="Update"
                         asp-route-id="@animal.Id"
                         class="uk-button uk-button-default grow">
-                        bewerken
+                        Bewerken
                     </a>
-                    <a asp-action="Details" asp-route-id="@animal.Id" class="uk-button uk-button-default grow">bekijk boekingen</a>
+                    <a asp-action="Details" asp-route-id="@animal.Id" class="uk-button uk-button-default grow">Bekijk boekingen</a>
                 </div>
             </div>
         </div>
