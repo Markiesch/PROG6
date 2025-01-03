@@ -61,7 +61,13 @@ public class AnimalController(AnimalService animalService) : Controller
             return View(model);
         }
         
-        await animalService.CreateAnimal(model.ToDto());
+        var result = await animalService.CreateAnimal(model.ToDto());
+        
+        if (!result)
+        {
+            ModelState.AddModelError(string.Empty, "Er is een onverwachte fout opgetreden.");
+            return View(model);
+        }
         
         return RedirectToAction("Index");
     }
@@ -110,7 +116,6 @@ public class AnimalController(AnimalService animalService) : Controller
     [HttpPost("{id:int}/delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        Console.WriteLine(id);
         var result = await animalService.DeleteAnimal(id);
         
         if (!result)

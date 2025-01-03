@@ -20,16 +20,16 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
                 IsAvailable = true
             })
             .ToListAsync();
-    } 
-    
+    }
+
     public async Task<IEnumerable<BookingDto>?> GetBookingsOfAnimal(int id, string? query)
     {
         var animal = await GetAnimal(id);
         if (animal == null) return null;
-        
+
         return await bookingService.GetBookingsByAnimalId(id, query);
     }
-    
+
     public async Task<AnimalDto?> GetAnimal(int id)
     {
         return await mainContext.Animals
@@ -45,7 +45,7 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
             })
             .FirstOrDefaultAsync();
     }
-    
+
     public async Task<List<AnimalDto>> GetAnimalsWithAvailability(DateOnly date)
     {
         return await mainContext.Animals
@@ -59,44 +59,66 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
                 IsAvailable = a.BookingDetails.Any(bd => DateOnly.FromDateTime(bd.Booking.Date) == date)
             })
             .ToListAsync();
-    } 
-    
-    
-    public async Task<bool> UpdateAnimal(int id, UpdateAnimalDto animal)
-    {
-        var entity = await mainContext.Animals.FindAsync(id);
-        if (entity == null) return false;
-        
-        entity.Name = animal.Name;
-        entity.Type = animal.Type;
-        entity.Price = animal.Price;
-        entity.Image = animal.Image;
-        
-        await mainContext.SaveChangesAsync();
-        return true;
     }
 
-    public async Task CreateAnimal(UpdateAnimalDto animal)
+
+    public async Task<bool> UpdateAnimal(int id, UpdateAnimalDto animal)
     {
-        var entity = new Animal
+        try
         {
-            Name = animal.Name,
-            Type = animal.Type,
-            Price = animal.Price,
-            Image = animal.Image
-        };
-        
-        mainContext.Animals.Add(entity);
-        await mainContext.SaveChangesAsync();
+            var entity = await mainContext.Animals.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.Name = animal.Name;
+            entity.Type = animal.Type;
+            entity.Price = animal.Price;
+            entity.Image = animal.Image;
+
+            await mainContext.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> CreateAnimal(UpdateAnimalDto animal)
+    {
+        try
+        {
+            var entity = new Animal
+            {
+                Name = animal.Name,
+                Type = animal.Type,
+                Price = animal.Price,
+                Image = animal.Image
+            };
+            
+            mainContext.Animals.Add(entity);
+            await mainContext.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public async Task<bool> DeleteAnimal(int id)
     {
-        var entity = await mainContext.Animals.FindAsync(id);
-        if (entity == null) return false;
-        
-        mainContext.Animals.Remove(entity);
-        await mainContext.SaveChangesAsync();
-        return true;
+        try
+        {
+            var entity = await mainContext.Animals.FindAsync(id);
+            if (entity == null) return false;
+
+            mainContext.Animals.Remove(entity);
+            await mainContext.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 }
