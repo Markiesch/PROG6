@@ -14,8 +14,6 @@ public class MainContext(DbContextOptions<MainContext> options) : IdentityDbCont
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        
-        CreateRelations(builder);
         SeedData(builder);
     }
 
@@ -49,56 +47,5 @@ public class MainContext(DbContextOptions<MainContext> options) : IdentityDbCont
             new Animal { Id = 15, Name = "T-Rex", Type = AnimalType.Vip, Price = 500.0m, Image = "/img/animals/t-rex.png" },
             new Animal { Id = 16, Name = "Unicorn", Type = AnimalType.Vip, Price = 1000.0m, Image = "/img/animals/unicorn.png" }
         );
-    }
-
-    private static void CreateRelations(ModelBuilder builder)
-    {
-        // Beestje Configuratie
-        builder.Entity<Animal>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Type).IsRequired().HasMaxLength(50);
-            entity.Property(e => e.Image).IsRequired().HasMaxLength(200);
-            entity.Property(e => e.Type).HasConversion<string>().IsRequired();
-        });
-
-        // Klant Configuratie
-        builder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.FirstName).IsRequired().HasMaxLength(255);
-            entity.Property(e => e.Infix).HasMaxLength(5);
-            entity.Property(e => e.LastName).IsRequired().HasMaxLength(255);
-            entity.Property(e => e.Address).IsRequired().HasMaxLength(255);
-            entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(15);
-            entity.Property(e => e.CustomerCardType).HasConversion<string>();
-        });
-
-        // Boeking Configuratie
-        builder.Entity<Booking>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasOne(e => e.Customer)
-                .WithMany(k => k.Bookings)
-                .HasForeignKey(e => e.CustomerId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        // BoekingDetail Configuratie
-        builder.Entity<BookingDetail>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasOne(e => e.Booking)
-                .WithMany(b => b.BookingDetails)
-                .HasForeignKey(e => e.BookingId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(e => e.Animal)
-                .WithMany(b => b.BookingDetails)
-                .HasForeignKey(e => e.AnimalId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
     }
 }

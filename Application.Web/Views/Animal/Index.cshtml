@@ -1,0 +1,59 @@
+@using Application.Data.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model AnimalListViewModel
+@{
+    ViewData["Title"] = "Alle beestjes";
+}
+
+<div class="uk-flex uk-flex-between uk-margin-bottom">
+    <h1>Alle beestjes</h1>
+    <div class="uk-flex">
+        <form asp-action="Index" method="get">
+            <div class="uk-inline">
+                <span class="uk-form-icon">
+                    <uk-icon icon="search"></uk-icon>
+                </span>
+                <input class="uk-input" name="query" type="text" placeholder="Zoek een beestje..." value="@Context.Request.Query["query"]" />
+            </div>
+            <button class="uk-button uk-button-primary">Zoeken</button>
+        </form>
+        <a asp-action="Create" class="uk-button uk-button-primary uk-margin-small-left">
+            <uk-icon icon="plus" class="uk-margin-small-right"></uk-icon>
+            Nieuw beestje
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-cols-3 gap-4">
+    @foreach (var animal in Model.Animals)
+    {
+        <div>
+            <div class="uk-card uk-card-body uk-card-default">
+                <div class="uk-flex uk-flex-between">
+                    <div>
+                        <h2 class="uk-card-title">@animal.Name</h2>
+
+                        <h3 class="uk-margin-top font-bold">Type</h3>
+                        <p>@animal.Type.ToDisplayName()</p>
+
+                        <h3 class="uk-margin-top font-bold">Prijs</h3>
+                        <p>&euro;@animal.Price</p>
+                    </div>
+                    <div class="w-1/2">
+                        <img src="@animal.Image" alt="">
+                    </div>
+                </div>
+
+                <div class="uk-flex gap-1 uk-margin-top">
+                    <a
+                        asp-action="Update"
+                        asp-route-id="@animal.Id"
+                        class="uk-button uk-button-default grow">
+                        Bewerken
+                    </a>
+                    <a asp-action="Details" asp-route-id="@animal.Id" class="uk-button uk-button-default grow">Bekijk boekingen</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
