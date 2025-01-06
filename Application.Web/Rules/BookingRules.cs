@@ -21,9 +21,12 @@ public static class BookingRules
     private static bool NoLionOrPolarBearWithFarmAnimal(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, out string errorMessage)
     {
         errorMessage = "Je mag geen beestje boeken met het type ‘Leeuw’ of ‘IJsbeer’ als je ook een beestje boekt van het type ‘Boerderijdier";
-        var isValid = !selectedAnimals.Any(a => a.Name.Equals("leeuw", StringComparison.CurrentCultureIgnoreCase) 
-                                                || a.Name.Equals("ijsbeer", StringComparison.CurrentCultureIgnoreCase))
-               || animalToAdd.Type != AnimalType.Farm;
+        var isValid = (!selectedAnimals.Any(a => a.Name.Equals("leeuw", StringComparison.CurrentCultureIgnoreCase) 
+                                 || a.Name.Equals("ijsbeer", StringComparison.CurrentCultureIgnoreCase))
+               || animalToAdd.Type != AnimalType.Farm)
+              && (!selectedAnimals.Any(a => a.Type == AnimalType.Farm)
+                  || !(animalToAdd.Name.Equals("leeuw", StringComparison.CurrentCultureIgnoreCase) 
+                       || animalToAdd.Name.Equals("ijsbeer", StringComparison.CurrentCultureIgnoreCase)));
         
         if (isValid) errorMessage = string.Empty;
         return isValid;
