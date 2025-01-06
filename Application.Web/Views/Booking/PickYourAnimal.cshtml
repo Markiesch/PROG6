@@ -119,9 +119,9 @@
     <script>
         // Create the alert element
         const alert = document.createElement('div');
-        alert.className = 'uk-alert uk-alert-danger uk-margin-bottom';
+        alert.className = 'uk-alert uk-alert-danger bg-white/[0.4] uk-margin-bottom uk-position-bottom-center uk-position-fixed z-[1000] backdrop-blur-lg';
         alert.setAttribute('uk-alert', '');
-        alert.innerHTML = `<div class="uk-alert-title">Het is niet mogelijk om dit beestje te selecteren. Zie de regels (i)</div>`; 
+        alert.innerHTML = `<a href class="uk-alert-close"></a><div class="uk-alert-title">Het is niet mogelijk om dit beestje te selecteren. Zie de regels (i)</div>`; 
     
         document.querySelectorAll('input[name="selectedAnimalIds"]').forEach(input => {
             input.addEventListener('change', function () {
@@ -147,14 +147,18 @@
                     .then(data => {
                         if (!data.isValid) {
                             alert.innerHTML = 
-                                `<div class="uk-alert-title">Het is niet mogelijk om dit beestje te selecteren. <button type="button" uk-toggle="target: #rules-modal"><uk-icon class="uk-display-inline-block" icon="info"></uk-icon></button></div><div class="uk-alert-description">${data.errorMessage}</div>`;
-                            document.getElementById('animalsFormBody').prepend(alert);                            
+                                `<a href class="uk-alert-close"></a>
+                                <div class="uk-alert-title">Het is niet mogelijk om dit beestje te selecteren. 
+                                    <button type="button" uk-toggle="target: #rules-modal"><uk-icon class="uk-display-inline-block" icon="info"></uk-icon></button>
+                                </div>
+                                <div class="uk-alert-description">${data.errorMessage}</div>`;
+                            document.body.prepend(alert);                            
                             this.checked = false;
                         }
                     })
                     .catch(() => {
                         alert.innerHTML = `<div class="uk-alert-title">Er is iets misgegaan. Probeer het later opnieuw.</div>`;
-                        document.getElementById('animalsFormBody').prepend(alert);
+                        document.body.prepend(alert);
                         this.checked = false;
                     })
                     .finally(() => document.body.classList.remove('loading'));
