@@ -124,9 +124,11 @@
         alert.innerHTML = `<a href class="uk-alert-close"></a><div class="uk-alert-title">Het is niet mogelijk om dit beestje te selecteren. Zie de regels (i)</div>`; 
     
         document.querySelectorAll('input[name="selectedAnimalIds"]').forEach(input => {
-            input.addEventListener('change', function () {
+            input.addEventListener('click', (event) => {
                 alert.remove();
-                if (!this.checked) return;
+                if (!event.target.checked) return;
+                
+                event.preventDefault();
                 document.body.classList.add('loading');
     
                 const selectedAnimalIds = Array.from(document.querySelectorAll('input[name="selectedAnimalIds"]:checked')).map(input => input.value);
@@ -137,7 +139,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        animalToAddId: parseInt(this.value),
+                        animalToAddId: parseInt(event.target.value),
                         selectedAnimalIds: selectedAnimalIds.map(id => parseInt(id)),
                         date: "@Model.Date.ToString("yyyy-MM-dd")",
                         customerCard: @customerCard
@@ -153,13 +155,15 @@
                                 </div>
                                 <div class="uk-alert-description">${data.errorMessage}</div>`;
                             document.body.prepend(alert);                            
-                            this.checked = false;
+                            event.target.checked = false;
+                        } else {
+                            event.target.checked = true;
                         }
                     })
                     .catch(() => {
                         alert.innerHTML = `<div class="uk-alert-title">Er is iets misgegaan. Probeer het later opnieuw.</div>`;
                         document.body.prepend(alert);
-                        this.checked = false;
+                        event.target.checked = false;
                     })
                     .finally(() => document.body.classList.remove('loading'));
             });
