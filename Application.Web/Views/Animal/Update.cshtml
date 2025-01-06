@@ -1,0 +1,111 @@
+@using System.IO
+@using System.Linq
+@using Application.Data.Models
+@model AnimalUpdateViewModel
+@{
+    ViewData["Title"] = Model.Name + " bewerken";
+}
+
+<a asp-action="Index" class="uk-button uk-button-link">
+    <uk-icon icon="arrow-left" class="uk-margin-small-right"></uk-icon>
+    Terug naar overzicht
+</a>
+
+<div class="grid grid-cols-2 gap-4 uk-margin-top">
+    <div class="uk-card uk-card-default">
+        <div class="uk-card-header">
+            <h1 class="uk-margin-bottom">@Model.Name bewerken</h1>
+        </div>
+        <div class="uk-card-body uk-margin-top">
+            <form asp-action="Update" asp-route-id="@Model.Id" method="post">
+                <div>
+                    <label for="name" class="uk-form-label">Naam*</label>
+                    <input type="text" id="name" class="uk-input" asp-for="@Model.Name"/>
+                    <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Name"></span>
+                </div>
+
+                @{
+                    var types = Enum.GetValues<AnimalType>()
+                        .Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToDisplayName() });
+                }
+                <div>
+                    <label for="type" class="uk-form-label uk-margin-top uk-display-inline-block">Type*</label>
+                    <select class="uk-select" id="type" asp-for="Type" asp-items="types"></select>
+                    <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Type"></span>
+                </div>
+
+                <div>
+                    <label for="price" class="uk-form-label uk-margin-top uk-display-inline-block">Prijs*</label>
+                    <input type="number" id="price" class="uk-input" asp-for="@Model.Price" step="0.01" />
+                    <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Price"></span>
+                </div>
+
+                <div>
+                    <label for="image" class="uk-form-label uk-margin-top uk-display-inline-block">Afbeelding*</label>
+                    <select id="image" class="uk-select" asp-for="@Model.Image">
+                        @foreach (var image in Directory.GetFiles(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "animals")))
+                        {
+                            var value = "/" + System.IO.Path.GetRelativePath("wwwroot", image).Replace('\\', '/');
+                            var text = System.IO.Path.GetFileNameWithoutExtension(image);
+                            <option value="@value">@text</option>
+                        }
+                    </select>
+                    <span class="uk-form-help uk-margin-small-top uk-text-danger" asp-validation-for="Image"></span>
+                </div>
+
+                <div class="uk-flex uk-flex-between uk-margin-top">
+                    <button
+                        class="uk-button uk-button-danger uk-margin-small-right"
+                        type="button"
+                        uk-toggle="target: #modal-delete"
+                    >
+                        Verwijderen
+                    </button>
+
+                    <div class="uk-flex">
+                        <a asp-action="Index" class="uk-button uk-button-default">Annuleren</a>
+                        <button type="submit" class="uk-button uk-button-primary uk-margin-xsmall-left">Opslaan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="uk-card uk-card-body uk-card-default">
+        <div class="uk-flex uk-flex-between">
+            <div>
+                <h2 class="uk-card-title" id="animal-name">@Model.Name</h2>
+
+                <h3 class="uk-margin-top font-bold">Type</h3>
+                <p id="animal-type">@Model.Type.ToDisplayName()</p>
+
+                <h3 class="uk-margin-top font-bold">Prijs</h3>
+                <p>&euro;<span id="animal-price">@Model.Price</span></p>
+            </div>
+            <div class="w-1/2">
+                <img id="animal-image" src="@Model.Image" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete" uk-modal>
+    <div class="uk-margin-auto-vertical uk-modal-dialog">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title">Actie bevestigen</h2>
+        </div>
+        <div class="uk-modal-body">
+            <p>Weet je zeker dat je dit dier wilt verwijderen?</p>
+        </div>
+        <form class="uk-modal-footer uk-text-right" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+            <button class="uk-modal-close uk-button uk-button-default" type="button">
+                Annuleren
+            </button>
+            <button class="uk-button uk-button-danger" type="submit">Verwijderen</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="/js/animal.js"></script>
+}

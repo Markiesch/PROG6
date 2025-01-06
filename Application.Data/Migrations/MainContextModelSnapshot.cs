@@ -43,10 +43,8 @@ namespace Application.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -59,7 +57,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/monkey.png",
                             Name = "Aap",
                             Price = 25.0m,
-                            Type = "Jungle"
+                            Type = 1
                         },
                         new
                         {
@@ -67,7 +65,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/elephant.png",
                             Name = "Olifant",
                             Price = 100.0m,
-                            Type = "Jungle"
+                            Type = 1
                         },
                         new
                         {
@@ -75,7 +73,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/zebra.png",
                             Name = "Zebra",
                             Price = 50.0m,
-                            Type = "Jungle"
+                            Type = 1
                         },
                         new
                         {
@@ -83,7 +81,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/lion.png",
                             Name = "Leeuw",
                             Price = 150.0m,
-                            Type = "Jungle"
+                            Type = 1
                         },
                         new
                         {
@@ -91,7 +89,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/dog.png",
                             Name = "Hond",
                             Price = 20.0m,
-                            Type = "Farm"
+                            Type = 0
                         },
                         new
                         {
@@ -99,7 +97,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/donkey.png",
                             Name = "Ezel",
                             Price = 30.0m,
-                            Type = "Farm"
+                            Type = 0
                         },
                         new
                         {
@@ -107,7 +105,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/cow.png",
                             Name = "Koe",
                             Price = 50.0m,
-                            Type = "Farm"
+                            Type = 0
                         },
                         new
                         {
@@ -115,7 +113,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/duck.png",
                             Name = "Eend",
                             Price = 15.0m,
-                            Type = "Farm"
+                            Type = 0
                         },
                         new
                         {
@@ -123,7 +121,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/chicken.png",
                             Name = "Kuiken",
                             Price = 10.0m,
-                            Type = "Farm"
+                            Type = 0
                         },
                         new
                         {
@@ -131,7 +129,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/penguin.png",
                             Name = "Pinguïn",
                             Price = 80.0m,
-                            Type = "Snow"
+                            Type = 2
                         },
                         new
                         {
@@ -139,7 +137,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/polar-bear.png",
                             Name = "IJsbeer",
                             Price = 200.0m,
-                            Type = "Snow"
+                            Type = 2
                         },
                         new
                         {
@@ -147,7 +145,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/seal.png",
                             Name = "Zeehond",
                             Price = 60.0m,
-                            Type = "Snow"
+                            Type = 2
                         },
                         new
                         {
@@ -155,7 +153,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/camel.png",
                             Name = "Kameel",
                             Price = 70.0m,
-                            Type = "Desert"
+                            Type = 3
                         },
                         new
                         {
@@ -163,7 +161,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/snake.png",
                             Name = "Slang",
                             Price = 40.0m,
-                            Type = "Desert"
+                            Type = 3
                         },
                         new
                         {
@@ -171,7 +169,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/t-rex.png",
                             Name = "T-Rex",
                             Price = 500.0m,
-                            Type = "Vip"
+                            Type = 4
                         },
                         new
                         {
@@ -179,7 +177,7 @@ namespace Application.Data.Migrations
                             Image = "/img/animals/unicorn.png",
                             Name = "Unicorn",
                             Price = 1000.0m,
-                            Type = "Vip"
+                            Type = 4
                         });
                 });
 
@@ -253,13 +251,12 @@ namespace Application.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CustomerCardType")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("CustomerCardType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -296,9 +293,7 @@ namespace Application.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
@@ -475,7 +470,7 @@ namespace Application.Data.Migrations
                     b.HasOne("Application.Data.Models.Animal", "Animal")
                         .WithMany("BookingDetails")
                         .HasForeignKey("AnimalId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Application.Data.Models.Booking", "Booking")

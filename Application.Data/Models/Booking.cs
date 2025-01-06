@@ -1,14 +1,30 @@
-﻿namespace Application.Data.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Application.Data.Models;
 
 public class Booking
 {
-    public int Id { get; set; }
-    public DateTime Date { get; set; }
+    [Key]
+    public int Id { get; init; }
+    
+    [Required]
+    public DateTime Date { get; init; }
+    
+    [Required]
     public bool Confirmed { get; set; }
-    public decimal Totalprice { get; set; }
+    
+    [Required]
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal Totalprice { get; init; }
 
-    // Relaties
-    public int CustomerId { get; set; }
-    public User Customer { get; set; } = null!;
-    public ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
+    [Required]
+    public int CustomerId { get; init; }
+    
+    [ForeignKey("CustomerId")]
+    [InverseProperty("Bookings")]
+    public User Customer { get; init; } = null!;
+    
+    [InverseProperty("Booking")]
+    public ICollection<BookingDetail> BookingDetails { get; init; } = new List<BookingDetail>();
 }
