@@ -66,7 +66,7 @@ public class BookingController(AnimalService animalService) : Controller
             return Json(new { isValid = false, errorMessage = "Ongeldige datum" });
 
         // Get data from services
-        var animalToAdd = await animalService.GetAnimalById(animalToAddId);
+        var animalToAdd = await animalService.GetAnimal(animalToAddId);
         var selectedAnimals = await animalService.GetAnimalsByIds(selectedAnimalIds);
         var date = DateOnly.Parse(dateString);
         var customerCard = customerCardString != null ? Enum.Parse<CustomerCardType>(customerCardString) : (CustomerCardType?)null;

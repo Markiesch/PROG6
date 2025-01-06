@@ -30,22 +30,6 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
         return await bookingService.GetBookingsByAnimalId(id, query);
     }
 
-    public async Task<AnimalDto?> GetAnimal(int id)
-    {
-        return await mainContext.Animals
-            .Where(a => a.Id == id)
-            .Select(a => new AnimalDto
-            {
-                Id = a.Id,
-                Name = a.Name,
-                Type = a.Type,
-                Price = a.Price,
-                Image = a.Image,
-                IsAvailable = true
-            })
-            .FirstOrDefaultAsync();
-    }
-
     public async Task<List<AnimalDto>> GetAnimalsWithAvailability(DateOnly date)
     {
         return await mainContext.Animals
@@ -60,8 +44,8 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
             })
             .ToListAsync();
     }
-
-    public async Task<AnimalDto?> GetAnimalById(int id)
+    
+    public async Task<AnimalDto?> GetAnimal(int id)
     {
         return await mainContext.Animals
             .Where(a => a.Id == id)
@@ -92,8 +76,7 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
             })
             .ToListAsync();
     }
-
-
+    
     public async Task<bool> UpdateAnimal(int id, UpdateAnimalDto animal)
     {
         try
