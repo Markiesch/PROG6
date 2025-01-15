@@ -35,13 +35,13 @@ public class AccountController(AccountService accountService) : Controller
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        // var bookings = await accountService.GetBookings(userId);
+        var bookings = await accountService.GetBookings(userId);
         
-        // var model = new AccountBookingsViewModel
-        // {
-            // Bookings = bookings
-        // };
+        var model = new BookingListViewModel
+        {
+            Bookings = bookings
+        };
         
-        return View();
+        return View(model);
     }
 }
