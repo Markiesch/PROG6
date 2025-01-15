@@ -11,16 +11,16 @@
 
 <div class="grid grid-cols-3 gap-4 uk-margin-top">
     <div class="uk-card uk-card-default col-span-2">
-        <div class="uk-card-header uk-flex uk-flex-between uk-align-center">
+        <div class="uk-card-header flex justify-between items-center">
             <h1>Jouw boeking #@Model.Booking.Id</h1>
-            <button class="uk-button uk-button-danger"
+            <button class="uk-button uk-button-danger uk-button-small"
                     type="button"
                     uk-toggle="target: #modal-delete">
                 Boeking verwijderen
             </button>
         </div>
         <div class="uk-card-body uk-margin-top">
-            <h2>Contactgegevens</h2>
+            <h2 class="uk-margin-small-bottom uk-text-bold">Contactgegevens</h2>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <p class="font-bold">Naam</p>
