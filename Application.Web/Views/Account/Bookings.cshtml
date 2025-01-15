@@ -1,0 +1,56 @@
+@using Application.Data.Models
+@using Application.Web.Views.Components
+@model AccountDetailsViewModel
+@{
+    ViewData["Title"] = "Mijn account";
+}
+
+<div class="uk-card uk-card-default uk-margin-top">
+    <div class="uk-card-header">
+        <h1 class="uk-margin-bottom">Mijn account</h1>
+    </div>
+
+
+    <div class="uk-card-body uk-margin-top">
+        <h2>Gegevens</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="uk-margin-small-top">
+                        <p class="uk-text-bold">Naam</p>
+                        <p>@Model.Account.FullName</p>
+                    </div>
+                    <div class="uk-margin-small-top">
+                        <p class="uk-text-bold">Email</p>
+                        <p>@Model.Account.Email</p>
+                    </div>
+                    <div class="uk-margin-small-top">
+                        <p class="uk-text-bold">Adres</p>
+                        <p>@Model.Account.Address</p>
+                    </div>
+                    <div class="uk-margin-small-top">
+                        <p class="uk-text-bold">Telefoonnummer</p>
+                        <p>@Model.Account.PhoneNumber</p>
+                    </div>
+                </div>
+
+                <h2 class="uk-margin-top">Mijn boekingen</h2>
+                <a class="uk-margin-small-top uk-button uk-button-default" asp-action="CustomerDetails" asp-controller="Booking">Boekingen bekijken</a>
+            </div>
+            <div>
+                <p class="uk-text-bold">Klantenkaart</p>
+
+                <component type="typeof(CustomerCard)" render-mode="ServerPrerendered" param-Selected="@(Model.Account.CustomerCardType == null)" />
+                @foreach (var item in Enum.GetValues(typeof(CustomerCardType)))
+                {
+                    <component 
+                        type="typeof(CustomerCard)" 
+                        render-mode="ServerPrerendered" 
+                        param-Type="@item" 
+                        param-Selected="@(Model.Account.CustomerCardType.Equals(item))" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

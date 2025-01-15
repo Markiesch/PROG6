@@ -1,0 +1,48 @@
+﻿@using Application.Data.Models
+
+@code {
+    [Parameter] public CustomerCardType? Type { get; set; }
+    [Parameter] public bool Selected { get; set; }
+}
+
+@{
+    var title = Type switch
+    {
+        CustomerCardType.Silver => "Zilver",
+        CustomerCardType.Gold => "Goud",
+        CustomerCardType.Platinum => "Platina",
+        _ => "Geen klantenkaart"
+    };
+        
+    var description = Type switch
+    {
+        CustomerCardType.Silver => "De klant kan 1 extra dier kiezen",
+        CustomerCardType.Gold => "De klant mag zoveel dieren boeken als hij/zij wil",
+        CustomerCardType.Platinum => "Goud + toegang tot VIP dieren",
+        _ => "De klant krijgt geen extra's"
+    };
+
+    var img = Type switch
+    {
+        CustomerCardType.Silver => "/img/silver-badge.png",
+        CustomerCardType.Gold => "/img/gold-badge.png",
+        CustomerCardType.Platinum => "/img/platinum-badge.png",
+        _ => null
+    };
+}
+<div class="uk-margin-small-top">
+    <div class="uk-card uk-card-default uk-card-body uk-padding @(Selected ? "uk-card-primary" : "")">
+        <div class="uk-flex gap-4">
+            @if (img != null)
+            {
+                <div>
+                    <img class="h-12" src="@img" alt="">
+                </div>
+            }
+            <div>
+                <h2 class="uk-card-title">@title</h2>
+                <p>@description</p>
+            </div>
+        </div>
+    </div>
+</div>
