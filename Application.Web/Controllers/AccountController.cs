@@ -8,7 +8,7 @@ namespace Application.Web.Controllers;
 
 [Authorize(Roles = "Customer")]
 [Route("/account")]
-public class AccountController(AccountService accountService) : Controller
+public class AccountController(AccountService accountService, BookingService bookingService) : Controller
 {
     [HttpGet("details")]
     public async Task<IActionResult> Details()
@@ -34,7 +34,7 @@ public class AccountController(AccountService accountService) : Controller
     public async Task<IActionResult> Bookings(string? query)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var bookings = await accountService.GetBookings(userId, query);
+        var bookings = await bookingService.GetBookings(userId, query);
         
         var model = new BookingListViewModel
         {
@@ -49,7 +49,7 @@ public class AccountController(AccountService accountService) : Controller
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var booking = await accountService.GetBooking(userId, id);
+        var booking = await bookingService.GetBooking(userId, id);
         var account = await accountService.GetAccount(userId);
         
         if (booking == null || account == null)
@@ -70,7 +70,7 @@ public class AccountController(AccountService accountService) : Controller
     public async Task<IActionResult> DeleteBooking(int id)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var res = await accountService.DeleteBooking(userId, id);
+        var res = await bookingService.DeleteBooking(userId, id);
         if (!res) return NotFound();
         
         return RedirectToAction("Bookings");
