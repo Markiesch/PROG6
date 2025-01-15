@@ -30,7 +30,7 @@ public class AuthController(AuthService authService) : Controller
         if (User.IsInRole(UserRole.Admin.ToString()))
             return RedirectToAction("Index", "Animals");
         if (User.IsInRole(UserRole.Customer.ToString()))
-            return RedirectToAction("Index", "Booking");
+            return RedirectToAction("Details", "Account");
 
         return RedirectToAction("Index", "Home");
     }
