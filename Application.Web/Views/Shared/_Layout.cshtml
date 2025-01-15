@@ -31,7 +31,7 @@
                         @if (User.IsInRole(UserRole.Customer.ToString()))
                         {
                             <li class="@(Context.Request.Path == "/myBookings" ? "uk-active" : "")">
-                                <a asp-action="Index" asp-controller="Home">Mijn boekingen</a>
+                                <a asp-action="Bookings" asp-controller="Account">Mijn boekingen</a>
                             </li>
                         }
                         else if (User.IsInRole(UserRole.Admin.ToString()))
