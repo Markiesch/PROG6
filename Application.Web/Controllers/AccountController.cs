@@ -31,11 +31,10 @@ public class AccountController(AccountService accountService) : Controller
     }
     
     [HttpGet("bookings")]
-    public async Task<IActionResult> Bookings()
+    public async Task<IActionResult> Bookings(string? query)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var bookings = await accountService.GetBookings(userId);
+        var bookings = await accountService.GetBookings(userId, query);
         
         var model = new BookingListViewModel
         {

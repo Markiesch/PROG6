@@ -26,10 +26,11 @@ public class AccountService(MainContext context)
         };
     }
     
-    public async Task<IEnumerable<BookingDto>> GetBookings(int userId)
+    public async Task<IEnumerable<BookingDto>> GetBookings(int userId, string? query)
     {
         var bookings = await context.Bookings
             .Where(b => b.CustomerId == userId)
+            .Where(x => string.IsNullOrEmpty(query) || x.Id.ToString().Contains(query))
             .Select(b => new BookingDto
             {
                 Id = b.Id,
