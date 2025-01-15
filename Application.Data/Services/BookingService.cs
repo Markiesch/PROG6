@@ -14,6 +14,7 @@ public class BookingService(MainContext mainContext)
             {
                 Id = b.Id,
                 Date = b.Date,
+                Totalprice = b.Totalprice,
                 Animals = b.BookingDetails.Select(bd => new AnimalDto
                 {
                     Id = bd.Animal.Id,

@@ -34,6 +34,7 @@ public class AccountService(MainContext context)
             {
                 Id = b.Id,
                 Date = b.Date,
+                Totalprice = b.Totalprice,
                 Animals = b.BookingDetails.Select(a => new AnimalDto
                 {
                     Id = a.Animal.Id,
@@ -47,5 +48,46 @@ public class AccountService(MainContext context)
             .ToListAsync();
         
         return bookings;
+    }
+    
+    public async Task<BookingDto?> GetBooking(int userId, int bookingId)
+    {
+        var booking = await context.Bookings
+            .Where(b => b.CustomerId == userId && b.Id == bookingId)
+            .Select(b => new BookingDto
+            {
+                Id = b.Id,
+                Date = b.Date,
+                Totalprice = b.Totalprice,
+                Animals = b.BookingDetails.Select(a => new AnimalDto
+                {
+                    Id = a.Animal.Id,
+                    Name = a.Animal.Name,
+                    Type = a.Animal.Type,
+                    Price = a.Animal.Price,
+                    Image = a.Animal.Image,
+                    IsAvailable = true
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
+        
+        return booking;
+    }
+    
+    public async Task<bool> DeleteBooking(int userId, int bookingId)
+    {
+        var booking = await context.Bookings
+            .Where(b => b.CustomerId == userId && b.Id == bookingId)
+            .FirstOrDefaultAsync();
+        
+        if (booking == null)
+        {
+            return false;
+        }
+        
+        context.Bookings.Remove(booking);
+        await context.SaveChangesAsync();
+        
+        return true;
     }
 }
