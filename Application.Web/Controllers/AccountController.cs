@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Web.Controllers;
 
-[Authorize(Roles = "Customer")]
 [Route("/account")]
 public class AccountController(AccountService accountService, BookingService bookingService) : Controller
 {
     [HttpGet("details")]
+    [Authorize(Roles = "Customer, Admin")]
     public async Task<IActionResult> Details()
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -31,6 +31,7 @@ public class AccountController(AccountService accountService, BookingService boo
     }
     
     [HttpGet("bookings")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> Bookings(string? query)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -45,6 +46,7 @@ public class AccountController(AccountService accountService, BookingService boo
     }
     
     [HttpGet("bookings/{id:int}")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> Booking(int id)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -67,6 +69,7 @@ public class AccountController(AccountService accountService, BookingService boo
     }
     
     [HttpPost("bookings/{id:int}/delete")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> DeleteBooking(int id)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
