@@ -17,6 +17,7 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options => { options.SignI
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AnimalService>();
+builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<BookingService>();
 
 // Session

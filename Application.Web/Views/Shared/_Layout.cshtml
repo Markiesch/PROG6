@@ -32,7 +32,7 @@
                         @if (User.IsInRole(UserRole.Customer.ToString()))
                         {
                             <li class="@(Context.Request.Path == "/myBookings" ? "uk-active" : "")">
-                                <a asp-action="Index" asp-controller="Home">Mijn boekingen</a>
+                                <a asp-action="Bookings" asp-controller="Account">Mijn boekingen</a>
                             </li>
                         }
                         else if (User.IsInRole(UserRole.Admin.ToString()))
@@ -67,7 +67,7 @@
                     {
                         <div>
                             <form asp-action="Logout" asp-controller="Auth" method="post">
-                                <a href="#" class="uk-button uk-button-primary">Mijn account</a>
+                                <a asp-action="Details" asp-controller="Account" class="uk-button uk-button-primary">Mijn account</a>
                                 <button type="submit" class="uk-button uk-button-default">Uitloggen</button>
                             </form>
                         </div>

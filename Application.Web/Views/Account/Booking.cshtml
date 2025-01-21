@@ -1,0 +1,104 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BookingDetailsViewModel
+@{
+    ViewData["Title"] = "Booking #" + Model.Booking.Id;
+}
+
+<a asp-action="Bookings" class="uk-button uk-button-link">
+    <uk-icon icon="arrow-left" class="uk-margin-small-right"></uk-icon>
+    Terug naar overzicht
+</a>
+
+<div class="grid grid-cols-3 gap-4 uk-margin-top">
+    <div class="uk-card uk-card-default col-span-2">
+        <div class="uk-card-header flex justify-between items-center">
+            <h1>Jouw boeking #@Model.Booking.Id</h1>
+            <button class="uk-button uk-button-danger uk-button-small"
+                    type="button"
+                    uk-toggle="target: #modal-delete">
+                Boeking verwijderen
+            </button>
+        </div>
+        <div class="uk-card-body uk-margin-top">
+            <h2 class="uk-margin-small-bottom uk-text-bold">Contactgegevens</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="font-bold">Naam</p>
+                    <p>@Model.Account.FullName</p>
+                </div>
+                <div>
+                    <p class="font-bold">E-mail</p>
+                    <p>@Model.Account.Email</p>
+                </div>
+                <div>
+                    <p class="font-bold">Adres</p>
+                    <p>@Model.Account.Address</p>
+                </div>
+                <div>
+                    <p class="font-bold">Telefoonnummer</p>
+                    <p>@Model.Account.PhoneNumber</p>
+                </div>
+            </div>
+
+            <hr class="uk-margin-top uk-margin-bottom"/>
+
+            <h2 class="uk-margin-bottom uk-text-bold">Bestelling</h2>
+            <div class="w-1/2">
+                <div class="uk-flex uk-flex-between uk-text-bold">
+                    <p>Beestje</p>
+                    <p>Prijs</p>
+                </div>
+                @foreach (var animal in Model.Booking.Animals)
+                {
+                    <div class="uk-flex uk-flex-between">
+                        <p>@animal.Name</p>
+                        <p>&euro;@animal.Price</p>
+                    </div>
+                }
+                <hr class="my-2"/>
+                <div class="uk-flex uk-flex-between uk-text-bold">
+                    <p>Totaal</p>
+                    <p>&euro;@Model.Booking.Totalprice</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="uk-card uk-card-default">
+        <div class="uk-card-header">
+            <h2>Overzicht boeking</h2>
+        </div>
+        <div class="uk-card-body uk-margin-top">
+            <p class="uk-text-bold">Datum (d-m-y)</p>
+            <p>@Model.Booking.Date.ToString("dd-MM-yyyy")</p>
+            <p class="uk-margin-top uk-text-bold uk-margin-small-bottom">Beestjes</p>
+            <div class="grid grid-cols-3 gap-1">
+                @foreach (var animal in Model.Booking.Animals)
+                {
+                    <div class="uk-card uk-card-default uk-padding uk-text-center">
+                        <img src="@animal.Image" alt=""/>
+                        <h4 class="uk-card-title uk-margin-top">@animal.Name</h4>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete" uk-modal>
+    <div class="uk-margin-auto-vertical uk-modal-dialog">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title">Actie bevestigen</h2>
+        </div>
+        <div class="uk-modal-body">
+            <p>Weet je zeker dat je deze boeking wilt verwijderen?</p>
+        </div>
+        <form class="uk-modal-footer uk-text-right" asp-action="DeleteBooking" asp-route-id="@Model.Booking.Id"
+              method="post">
+            <button class="uk-modal-close uk-button uk-button-default" type="button">
+                Annuleren
+            </button>
+            <button class="uk-button uk-button-danger" type="submit">Verwijderen</button>
+        </form>
+    </div>
+</div>

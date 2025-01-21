@@ -1,0 +1,64 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BookingListViewModel
+@{
+    ViewData["Title"] = "Mijn boekingen";
+}
+
+<div class="uk-flex uk-flex-between uk-margin-top uk-margin-bottom">
+    <h1>Mijn boekingen</h1>
+    <div class="uk-flex">
+        <form asp-action="Bookings" method="get">
+            <div class="uk-inline">
+                <span class="uk-form-icon">
+                    <uk-icon icon="search"></uk-icon>
+                </span>
+                <input class="uk-input" name="query" type="text" placeholder="zoek op bestelnummer..."
+                       value="@Context.Request.Query["query"]"/>
+            </div>
+            <button class="uk-button uk-button-primary">Zoeken</button>
+        </form>
+        <a asp-action="Index" asp-controller="Home" class="uk-button uk-button-primary uk-margin-small-left">
+            <uk-icon icon="plus" class="uk-margin-small-right"></uk-icon>
+            Nieuwe boeking
+        </a>
+    </div>
+</div>
+
+@if (!Model.Bookings.Any())
+{
+    <h2 class="uk-margin-top">Geen boekingen gevonden</h2>
+}
+
+<div class="grid grid-cols-3 gap-4">
+    @foreach (var booking in Model.Bookings)
+    {
+        <div>
+            <div class="uk-card uk-card-body uk-card-default">
+                <div class="uk-flex uk-flex-between">
+                    <h2 class="uk-card-title">Boeking <span class="text-highlight">#@booking.Id</span></h2>
+                    <a class="uk-button uk-button-default" asp-action="Booking" asp-route-id="@booking.Id">Bekijken</a>
+                </div>
+
+                <h3 class="uk-margin-top font-bold">Datum</h3>
+                <p>@booking.Date.ToString("dd-MM-yyyy")</p>
+
+                <h3 class="uk-margin-top font-bold">Beestjes</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    @foreach (var animal in booking.Animals.Take(2))
+                    {
+                        <div class="uk-card uk-card-default uk-padding uk-text-center">
+                            <img src="@animal.Image" alt=""/>
+                            <h4 class="uk-card-title uk-margin-top">@animal.Name</h4>
+                        </div>
+                    }
+                    @if (booking.Animals.Count() > 2)
+                    {
+                        <div class="uk-card uk-card-default uk-padding uk-text-center">
+                            <h4 class="uk-card-title uk-margin-top">+@(booking.Animals.Count() - 2)</h4>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
