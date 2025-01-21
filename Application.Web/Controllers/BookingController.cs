@@ -18,7 +18,7 @@ public class BookingController(AnimalService animalService, AccountService accou
         var date = GetValidDateFromSession();
         var animals = await animalService.GetAnimalsWithAvailability(date);
         var selectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession());
-        var customerCard = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+        var customerCard = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
         
         var viewModel = new PickYourAnimalViewModel
         {
@@ -78,7 +78,7 @@ public class BookingController(AnimalService animalService, AccountService accou
         // validate selection
         int animalToAddId = selectedAnimalIds.Find(id => !GetAnimalIdsFromSession().Contains(id));
         DateOnly bookingDate = GetValidDateFromSession();
-        CustomerCardType? customerCard = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+        var customerCard = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
         
         if (animalToAddId == 0)
         {
