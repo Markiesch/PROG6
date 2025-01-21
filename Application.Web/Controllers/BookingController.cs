@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text.Json;
 using Application.Data.Dto;
 using Application.Data.Models;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Application.Web.Controllers;
 [Route("/booking")]
 
-public class BookingController(AnimalService animalService) : Controller
+public class BookingController(AnimalService animalService, AccountService accountService) : Controller
 {
     [HttpGet("pick-your-animal/")]
     public async Task<IActionResult> PickYourAnimal()
@@ -17,13 +18,14 @@ public class BookingController(AnimalService animalService) : Controller
         var date = GetValidDateFromSession();
         var animals = await animalService.GetAnimalsWithAvailability(date);
         var selectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession());
+        var customerCard = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
         
         var viewModel = new PickYourAnimalViewModel
         {
             Date = date, 
             Animals = animals,
             SelectedAnimals = selectedAnimals,
-            CustomerCard = null // TODO: Get customer card
+            CustomerCard = customerCard
         };
         return View(viewModel);
     }
@@ -76,7 +78,7 @@ public class BookingController(AnimalService animalService) : Controller
         // validate selection
         int animalToAddId = selectedAnimalIds.Find(id => !GetAnimalIdsFromSession().Contains(id));
         DateOnly bookingDate = GetValidDateFromSession();
-        CustomerCardType? customerCard = null; // TODO: Get customer card
+        CustomerCardType? customerCard = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
         
         if (animalToAddId == 0)
         {
