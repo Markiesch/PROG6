@@ -16,22 +16,25 @@ public class BookingController(AnimalService animalService) : Controller
     {
         var date = GetValidDateFromSession();
         var animals = await animalService.GetAnimalsWithAvailability(date);
+        var selectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession());
+        
         var viewModel = new PickYourAnimalViewModel
         {
             Date = date, 
             Animals = animals,
+            SelectedAnimals = selectedAnimals,
             CustomerCard = null // TODO: Get customer card
         };
         return View(viewModel);
     }
 
     [HttpGet("customer-details")]
-    public IActionResult CustomerDetails()
+    public async Task<IActionResult> CustomerDetails()
     {
         var viewModel = new CustomerDetailsViewModel()
         {
             Date = DateOnly.FromDateTime(DateTime.Now),
-            SelectedAnimals = []
+            SelectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession())
         };
         return View(viewModel);
     }
@@ -52,36 +55,10 @@ public class BookingController(AnimalService animalService) : Controller
         return RedirectToAction("PickYourAnimal");
     }
 
-    [HttpPost("validate-animal-selection")]
-    public async Task<JsonResult> ValidateAnimalSelection([FromBody] dynamic request)
-    {
-        // Parse request
-        var jsonElement = (JsonElement)request;
-        var animalToAddId = jsonElement.GetProperty("animalToAddId").GetInt32();
-        var selectedAnimalIds = jsonElement.GetProperty("selectedAnimalIds").EnumerateArray().Select(x => x.GetInt32()).ToList();
-        var dateString = jsonElement.GetProperty("date").GetString();
-        var customerCardString = jsonElement.GetProperty("customerCard").GetString();
-
-        if (dateString == null) 
-            return Json(new { isValid = false, errorMessage = "Ongeldige datum" });
-
-        // Get data from services
-        var animalToAdd = await animalService.GetAnimal(animalToAddId);
-        var selectedAnimals = await animalService.GetAnimalsByIds(selectedAnimalIds);
-        var date = DateOnly.Parse(dateString);
-        var customerCard = customerCardString != null ? Enum.Parse<CustomerCardType>(customerCardString) : (CustomerCardType?)null;
-
-        // Validate selection
-        string errorMessage = string.Empty;
-        var isValid = animalToAdd != null && BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard, out errorMessage);
-
-        return Json(new { isValid, errorMessage });
-    }
-
     [HttpPost("save-selected-animals")]
-    public IActionResult SaveSelectedAnimals(DateOnly date, List<int> selectedAnimalIds)
+    public async Task<IActionResult> SaveSelectedAnimals(List<int> selectedAnimalIds)
     {
-        // validate
+        // validate form data
         if (!ModelState.IsValid)
         {
             TempData["Alert"] = "Er is iets misgegaan";
@@ -95,10 +72,41 @@ public class BookingController(AnimalService animalService) : Controller
             TempData["AlertDescription"] = "Je moet minimaal één dier selecteren om verder te gaan.";
             return RedirectToAction("PickYourAnimal");
         }
+        
+        // validate selection
+        int animalToAddId = selectedAnimalIds.Find(id => !GetAnimalIdsFromSession().Contains(id));
+        DateOnly bookingDate = GetValidDateFromSession();
+        CustomerCardType? customerCard = null; // TODO: Get customer card
+        
+        if (animalToAddId == 0)
+        {
+            HttpContext.Session.SetString("SelectedAnimalIds", JsonSerializer.Serialize(selectedAnimalIds));
+            return RedirectToAction("PickYourAnimal");
+        }
 
-        HttpContext.Session.SetString("BookingDate", date.ToString());
-        HttpContext.Session.SetString("SelectedAnimalIds", JsonSerializer.Serialize(selectedAnimalIds));
-        return RedirectToAction("CustomerDetails");
+        bool result = await ValidateAnimalSelection(animalToAddId, selectedAnimalIds, bookingDate, customerCard);
+        if (result)
+        {
+            HttpContext.Session.SetString("SelectedAnimalIds", JsonSerializer.Serialize(selectedAnimalIds));
+        }
+        return RedirectToAction("PickYourAnimal");
+    }
+
+    private async Task<bool> ValidateAnimalSelection(int animalToAddId, List<int> selectedAnimalIds, DateOnly date, CustomerCardType? customerCard)
+    {
+        // Get data from services
+        var animalToAdd = await animalService.GetAnimal(animalToAddId);
+        var selectedAnimals = await animalService.GetAnimalsByIds(selectedAnimalIds);
+
+        // Validate selection
+        string errorMessage = string.Empty;
+        var isValid = animalToAdd != null && BookingRules.Validate(animalToAdd, selectedAnimals, date, customerCard, out errorMessage);
+        if (!isValid)
+        {
+            TempData["Alert"] = "Ongeldige selectie";
+            TempData["AlertDescription"] = errorMessage;
+        }
+        return isValid;
     }
 
     private DateOnly GetValidDateFromSession()
@@ -111,5 +119,11 @@ public class BookingController(AnimalService animalService) : Controller
         TempData["AlertDescription"] = "Je moet een datum in de toekomst selecteren om een boeking te starten.";
         Response.Redirect("/");
         return DateOnly.FromDateTime(DateTime.Now);
+    }
+    
+    private List<int> GetAnimalIdsFromSession()
+    {
+        var sessionSavedAnimals = HttpContext.Session.GetString("SelectedAnimalIds");
+        return (sessionSavedAnimals != null ? JsonSerializer.Deserialize<List<int>>(sessionSavedAnimals) : []) ?? new List<int>();
     }
 }

@@ -146,3 +146,9 @@ input[type="checkbox"]:not(:disabled) + .checkbox-card--vip {
 .progress-stepper .finished .rounded-full::after {
   background-color: hsl(var(--highlight)) !important;
 }
+.progress-stepper a {
+  pointer-events: none;
+}
+.progress-stepper a.finished {
+  pointer-events: auto;
+}

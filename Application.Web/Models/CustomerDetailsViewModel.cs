@@ -1,10 +1,10 @@
-using Application.Data.Models;
+using Application.Data.Dto;
 
 namespace Application.Web.Models;
 
 public class CustomerDetailsViewModel
 {
-    public required DateOnly Date { get; set; }
+    public required DateOnly Date { get; init; }
     
-    public required List<Animal> SelectedAnimals { get; set; }
+    public required IEnumerable<AnimalDto> SelectedAnimals { get; init; }
 }
