@@ -115,12 +115,20 @@ public class AccountController(AccountService accountService, BookingService boo
             return View(model);
         }
 
-        return CreateSuccess(model.Email, password);
+        TempData["Email"] = model.Email;
+        TempData["Password"] = password;
+        
+        return RedirectToAction("CreateSuccess");
     }
     
     [HttpGet("create/success")]
-    public IActionResult CreateSuccess(string email, string password)
+    public IActionResult CreateSuccess()
     {
+        if (TempData["Email"] is not string email || TempData["Password"] is not string password)
+        {
+            return RedirectToAction("Create");
+        }
+        
         var model = new AccountCreateSuccessViewModel
         {
             Email = email,
