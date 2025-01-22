@@ -33,9 +33,41 @@ public class BookingController(AnimalService animalService, AccountService accou
     [HttpGet("customer-details")]
     public async Task<IActionResult> CustomerDetails()
     {
+        var selectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession());
+        if (selectedAnimals.Count == 0)
+        {
+            TempData["Alert"] = "Selecteer een dier";
+            TempData["AlertDescription"] = "Je moet minimaal één dier selecteren om verder te gaan.";
+            return RedirectToAction("PickYourAnimal");
+        }
+        
+        if (User.Identity is { IsAuthenticated: true })
+        {
+            return RedirectToAction("BookingOverview");
+        }
+        
         var viewModel = new CustomerDetailsViewModel()
         {
-            Date = DateOnly.FromDateTime(DateTime.Now),
+            Date = GetValidDateFromSession(),
+            SelectedAnimals = selectedAnimals,
+            
+            FirstName = string.Empty,
+            Infix = string.Empty,
+            LastName = string.Empty,
+            Address = string.Empty,
+            City = string.Empty,
+            Email = string.Empty,
+            PhoneNumber = string.Empty
+        };
+        return View(viewModel);
+    }
+
+    [HttpGet("booking-overview")]
+    public async Task<IActionResult> BookingOverview()
+    {
+        var viewModel = new BookingOverviewViewModel()
+        {
+            Date = GetValidDateFromSession(),
             SelectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession())
         };
         return View(viewModel);
@@ -92,6 +124,18 @@ public class BookingController(AnimalService animalService, AccountService accou
             HttpContext.Session.SetString("SelectedAnimalIds", JsonSerializer.Serialize(selectedAnimalIds));
         }
         return RedirectToAction("PickYourAnimal");
+    }
+
+    [HttpPost("save-customer-details")]
+    public async Task<IActionResult> SaveCustomerDetails(CustomerDetailsViewModel model)
+    {
+        // TODO:
+        // validate
+        
+        // save to session
+        
+        // redirect
+        return RedirectToAction("BookingOverview");
     }
 
     private async Task<bool> ValidateAnimalSelection(int animalToAddId, List<int> selectedAnimalIds, DateOnly date, CustomerCardType? customerCard)
