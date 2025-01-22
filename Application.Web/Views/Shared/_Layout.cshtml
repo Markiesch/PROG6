@@ -25,10 +25,13 @@
                 </div>
                 <div class="uk-navbar-center">
                     <ul class="uk-navbar-nav">
-                        <li class="@(Context.Request.Path == "/home" || Context.Request.Path == "/" ? "uk-active" : "")">
-                            <a asp-action="Index" asp-controller="Home">Home</a>
-                        </li>
-                        
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="@(Context.Request.Path == "/home" || Context.Request.Path == "/" ? "uk-active" : "")">
+                                <a asp-action="Index" asp-controller="Home">Home</a>
+                            </li>
+                        }
+
                         @if (User.IsInRole(UserRole.Customer.ToString()))
                         {
                             <li class="@(Context.Request.Path == "/myBookings" ? "uk-active" : "")">
