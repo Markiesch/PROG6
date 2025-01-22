@@ -9,13 +9,63 @@
 <component type="typeof(BookingStepper)" render-mode="ServerPrerendered" param-CurrentStep="3" />
 
 <div class="uk-flex uk-flex-wrap-reverse gap-4">
-    <form asp-action="" method="post" class="uk-card uk-card-default uk-width-expand">
+    <form asp-controller="Booking" asp-action="SaveCustomerDetails" method="post" class="uk-card uk-card-default uk-width-expand">
         <div class="uk-card-header flex uk-align-center uk-flex-between">
             <h1>Stap 3 - Vul je contactgegevens in</h1>
             <button class="uk-button uk-button-primary" type="submit">Boeking afronden</button>
         </div>
-        <div class="uk-card-body uk-flex uk-flex-wrap uk-flex-between -mb-4">
-            Form fields
+        <div class="uk-card-body">
+            <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-bottom">
+                <h2>Jouw gegevens</h2>
+                <p class="uk-text-bold">
+                    Heb je al een account? <button type="button" uk-toggle="target: #modal-login" class="text-highlight">Inloggen</button>
+                </p>
+            </div>
+            <div>
+                <div class="uk-flex gap-4 uk-margin-bottom">
+                    <div class="uk-width-1-2 uk-flex gap-2">
+                        <div class="uk-width-2-3">
+                            <label asp-for="FirstName" class="uk-form-label">Voornaam*</label>
+                            <input asp-for="FirstName" class="uk-input" type="text"/>
+                            <span asp-validation-for="FirstName" class="uk-text-danger"></span>
+                        </div>
+                        <div class="uk-width-1-3">
+                            <label asp-for="Infix" class="uk-form-label">Tussenvoegsel</label>
+                            <input asp-for="Infix" class="uk-input" type="text"/>
+                            <span asp-validation-for="Infix" class="uk-text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="uk-width-1-2">
+                        <label asp-for="LastName" class="uk-form-label">Achternaam*</label>
+                        <input asp-for="LastName" class="uk-input" type="text"/>
+                        <span asp-validation-for="LastName" class="uk-text-danger"></span>
+                    </div>
+                </div>
+                <div class="uk-flex gap-4 uk-margin-bottom">
+                    <div class="uk-width-1-2">
+                        <label asp-for="Address" class="uk-form-label">Adres*</label>
+                        <input asp-for="Address" class="uk-input" type="text"/>
+                        <span asp-validation-for="Address" class="uk-text-danger"></span>
+                    </div>
+                    <div class="uk-width-1-2">
+                        <label asp-for="City" class="uk-form-label">Plaats*</label>
+                        <input asp-for="City" class="uk-input" type="text"/>
+                        <span asp-validation-for="City" class="uk-text-danger"></span>
+                    </div>
+                </div>
+                <div class="uk-flex gap-4">
+                    <div class="uk-width-1-2">
+                        <label asp-for="PhoneNumber" class="uk-form-label">Telefoonnummer</label>
+                        <input asp-for="PhoneNumber" class="uk-input" type="text"/>
+                        <span asp-validation-for="PhoneNumber" class="uk-text-danger"></span>
+                    </div>
+                    <div class="uk-width-1-2">
+                        <label asp-for="Email" class="uk-form-label">E-mail</label>
+                        <input asp-for="Email" class="uk-input" type="text"/>
+                        <span asp-validation-for="Email" class="uk-text-danger"></span>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
     <div class="uk-width-1-4">
@@ -37,13 +87,35 @@
                         @foreach(var animal in Model.SelectedAnimals)
                         {
                             <div class="uk-card uk-card-default uk-padding uk-text-center uk-width-auto">
-                                <img width="40" src="@animal.Image" alt="@animal.Name"/>
+                                <img width="40" class="uk-margin-auto" src="@animal.Image" alt="@animal.Name"/>
                                 <h4 class="uk-card-title uk-margin-top">@animal.Name</h4>
                             </div>
                         }
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-login" uk-modal>
+    <div class="uk-margin-auto-vertical uk-modal-dialog">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title">Inloggen</h2>
+        </div>
+        <div class="uk-modal-body">
+            <form asp-action="Login" method="post" asp-controller="Auth" asp-route-returnUrl="/booking/booking-overview">
+                <div class="uk-margin-bottom">
+                    <label for="email" class="uk-form-label">E-mail</label>
+                    <input name="Email" id="email" class="uk-input" type="text"/>
+                </div>
+                <div class="uk-margin-bottom">
+                    <label for="password" class="uk-form-label">Wachtwoord</label>
+                    <input name="Password" id="password" class="uk-input" type="password"/>
+                </div>
+                <button type="submit" class="uk-button uk-button-primary uk-width-1">Inloggen</button>
+            </form>
         </div>
     </div>
 </div>
