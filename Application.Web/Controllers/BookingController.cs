@@ -43,10 +43,16 @@ public class BookingController(AnimalService animalService, AccountService accou
         
         if (User.Identity is { IsAuthenticated: true })
         {
-            return RedirectToAction("BookingOverview");
+            bool saved = SaveCustomerDetailsToSession(null, 
+                await accountService.GetAccount(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1")));
+            if (saved) return RedirectToAction("BookingOverview");
+            
+            TempData["Alert"] = "Er is iets misgegaan";
+            TempData["AlertDescription"] = "Er is iets misgegaan bij het ophalen van jouw gegevens. Probeer het opnieuw.";
+            return RedirectToAction("Index", "Home");
         }
         
-        var viewModel = new CustomerDetailsViewModel()
+        var viewModel = new CustomerDetailsViewModel
         {
             Date = GetValidDateFromSession(),
             SelectedAnimals = selectedAnimals,
@@ -65,7 +71,22 @@ public class BookingController(AnimalService animalService, AccountService accou
     [HttpGet("booking-overview")]
     public async Task<IActionResult> BookingOverview()
     {
-        var viewModel = new BookingOverviewViewModel()
+        var selectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession());
+        if (selectedAnimals.Count == 0)
+        {
+            TempData["Alert"] = "Selecteer een dier";
+            TempData["AlertDescription"] = "Je moet minimaal één dier selecteren om verder te gaan.";
+            return RedirectToAction("PickYourAnimal");
+        }
+        
+        if (GetCustomerDetailsFromSession() == null)
+        {
+            TempData["Alert"] = "Vul je gegevens in";
+            TempData["AlertDescription"] = "Je moet je gegevens invullen om verder te gaan.";
+            return RedirectToAction("CustomerDetails");
+        }
+        
+        var viewModel = new BookingOverviewViewModel
         {
             Date = GetValidDateFromSession(),
             SelectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession())
@@ -73,6 +94,7 @@ public class BookingController(AnimalService animalService, AccountService accou
         return View(viewModel);
     }
     
+    // == POST methods == //
     [HttpPost("start-booking")]
     public IActionResult StartBooking(DateOnly? date)
     {
@@ -99,13 +121,6 @@ public class BookingController(AnimalService animalService, AccountService accou
             TempData["AlertDescription"] = "Er is iets misgegaan bij het selecteren van de dieren. Probeer het opnieuw.";
             return RedirectToAction("PickYourAnimal");
         }
-
-        if (selectedAnimalIds.Count == 0)
-        {
-            TempData["Alert"] = "Selecteer een dier";
-            TempData["AlertDescription"] = "Je moet minimaal één dier selecteren om verder te gaan.";
-            return RedirectToAction("PickYourAnimal");
-        }
         
         // validate selection
         int animalToAddId = selectedAnimalIds.Find(id => !GetAnimalIdsFromSession().Contains(id));
@@ -129,15 +144,20 @@ public class BookingController(AnimalService animalService, AccountService accou
     [HttpPost("save-customer-details")]
     public async Task<IActionResult> SaveCustomerDetails(CustomerDetailsViewModel model)
     {
-        // TODO:
-        // validate
+        model.SelectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession());
+        if (!ModelState.IsValid) return View("CustomerDetails", model);
         
-        // save to session
+        bool saved = SaveCustomerDetailsToSession(model, null);
+        if (saved) 
+            return RedirectToAction("BookingOverview");
         
-        // redirect
-        return RedirectToAction("BookingOverview");
+        TempData["Alert"] = "Er is iets misgegaan";
+        TempData["AlertDescription"] = "Er is iets misgegaan bij het opslaan van de (contact)gegevens. Probeer het opnieuw.";
+        return View("CustomerDetails", model);
     }
 
+    
+    // == Private methods == //
     private async Task<bool> ValidateAnimalSelection(int animalToAddId, List<int> selectedAnimalIds, DateOnly date, CustomerCardType? customerCard)
     {
         // Get data from services
@@ -153,6 +173,39 @@ public class BookingController(AnimalService animalService, AccountService accou
             TempData["AlertDescription"] = errorMessage;
         }
         return isValid;
+    }
+
+    private bool SaveCustomerDetailsToSession(CustomerDetailsViewModel? model, AccountDto? account)
+    {
+        if (model == null && account == null) return false;
+
+        var customerDetails = new Dictionary<string, string>()
+        {
+            { "name", string.Empty },
+            { "address", string.Empty },
+            { "email", string.Empty  },
+            { "phone", string.Empty  }
+        };
+        
+        if (model != null && account == null)
+        {
+            customerDetails["name"] = model.Infix != null ? model.FirstName + " " + model.Infix + " " + model.LastName : model.FirstName + " " + model.LastName;
+            customerDetails["address"] = model.Address + " " + model.City;
+            customerDetails["email"] = model.Email ?? string.Empty;
+            customerDetails["phone"] = model.PhoneNumber ?? string.Empty;
+        }
+
+        if (model == null && account != null)
+        {
+            customerDetails["name"] = account.FullName;
+            customerDetails["address"] = account.Address;
+            customerDetails["email"] = account.Email ?? string.Empty;
+            customerDetails["phone"] = account.PhoneNumber ?? string.Empty;
+        }
+        
+        if (customerDetails.Values.All(value => value == string.Empty)) return false;
+        HttpContext.Session.SetString("CustomerDetails", JsonSerializer.Serialize(customerDetails));
+        return true;
     }
 
     private DateOnly GetValidDateFromSession()
@@ -171,5 +224,11 @@ public class BookingController(AnimalService animalService, AccountService accou
     {
         var sessionSavedAnimals = HttpContext.Session.GetString("SelectedAnimalIds");
         return (sessionSavedAnimals != null ? JsonSerializer.Deserialize<List<int>>(sessionSavedAnimals) : []) ?? new List<int>();
+    }
+    
+    private Dictionary<string, string>? GetCustomerDetailsFromSession()
+    {
+        var sessionSavedCustomerDetails = HttpContext.Session.GetString("CustomerDetails");
+        return sessionSavedCustomerDetails != null ? JsonSerializer.Deserialize<Dictionary<string, string>>(sessionSavedCustomerDetails) : new Dictionary<string, string>();
     }
 }

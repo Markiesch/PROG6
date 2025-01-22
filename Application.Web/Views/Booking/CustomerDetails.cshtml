@@ -10,6 +10,8 @@
 
 <div class="uk-flex uk-flex-wrap-reverse gap-4">
     <form asp-controller="Booking" asp-action="SaveCustomerDetails" method="post" class="uk-card uk-card-default uk-width-expand">
+        <input type="hidden" asp-for="Date" value="@Model.Date" />
+        <input type="hidden" asp-for="SelectedAnimals" value="@Model.SelectedAnimals" />
         <div class="uk-card-header flex uk-align-center uk-flex-between">
             <h1>Stap 3 - Vul je contactgegevens in</h1>
             <button class="uk-button uk-button-primary" type="submit">Boeking afronden</button>
@@ -43,7 +45,7 @@
                 </div>
                 <div class="uk-flex gap-4 uk-margin-bottom">
                     <div class="uk-width-1-2">
-                        <label asp-for="Address" class="uk-form-label">Adres*</label>
+                        <label asp-for="Address" class="uk-form-label">Straat & Huisnummer*</label>
                         <input asp-for="Address" class="uk-input" type="text"/>
                         <span asp-validation-for="Address" class="uk-text-danger"></span>
                     </div>
@@ -105,7 +107,7 @@
             <h2 class="uk-modal-title">Inloggen</h2>
         </div>
         <div class="uk-modal-body">
-            <form asp-action="Login" method="post" asp-controller="Auth" asp-route-returnUrl="/booking/booking-overview">
+            <form asp-action="Login" method="post" asp-controller="Auth" asp-route-returnUrl="/booking/customer-details">
                 <div class="uk-margin-bottom">
                     <label for="email" class="uk-form-label">E-mail</label>
                     <input name="Email" id="email" class="uk-input" type="text"/>

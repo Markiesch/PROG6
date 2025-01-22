@@ -6,7 +6,7 @@ namespace Application.Web.Models;
 public class CustomerDetailsViewModel
 {
     public required DateOnly Date { get; init; }
-    public required IEnumerable<AnimalDto> SelectedAnimals { get; init; }
+    public required IEnumerable<AnimalDto> SelectedAnimals { get; set; }
     
     [Required(ErrorMessage = "Voornaam is verplicht")]
     public required string FirstName { get; init; }
