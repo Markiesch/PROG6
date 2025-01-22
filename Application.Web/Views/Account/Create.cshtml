@@ -1,6 +1,7 @@
 @using Application.Data.Models
 @using Application.Web.Views.Components
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Data.SqlClient.DataClassification
 @model AccountCreateViewModel
 @{
     ViewData["Title"] = "Nieuw account";
@@ -14,7 +15,7 @@
 
 
         <div class="uk-card-body uk-margin-top">
-            
+
             <p class="text-amber-500 font-bold flex items-center uk-margin-bottom">
                 <uk-icon icon="circle-alert" class="uk-margin-small-right"></uk-icon>
                 Let op! Vergeet niet het wachtwoord te bewaren na het aanmaken van het account.
@@ -68,7 +69,7 @@
 
                         <div>
                             <label for="password" class="uk-form-label">Wachtwoord</label>
-                            <input type="text" id="password" class="uk-input" readonly placeholder="************" />
+                            <input type="text" id="password" class="uk-input" readonly placeholder="************"/>
                             <div class="uk-form-help uk-margin-small-top">
                                 Het wachtwoord wordt automatisch gegenereerd.
                             </div>
@@ -78,21 +79,24 @@
                     @Html.ValidationSummary(true, string.Empty, new { @class = "uk-text-danger" })
 
                 </div>
-                
+
                 <div class="px-6">
-                    <hr class="uk-divider-vertical h-full" />
+                    <hr class="uk-divider-vertical h-full"/>
                 </div>
-                
-                <div class="w-[37.5rem]">
+
+                <div>
                     <p class="uk-text-bold">Klantenkaart</p>
 
-                    <component type="typeof(CustomerCard)" render-mode="ServerPrerendered"/>
+                    <label class="w-[27.5rem] block" for="card_none">
+                        <input class="hidden" id="card_none" type="radio" asp-for="@Model.CustomerCardType" value="@(null)">
+                        <component type="typeof(CustomerCard)" render-mode="ServerPrerendered" param-Selected="@(Model.CustomerCardType == null)" />
+                    </label>
                     @foreach (var item in Enum.GetValues(typeof(CustomerCardType)))
                     {
-                        <component
-                            type="typeof(CustomerCard)"
-                            render-mode="ServerPrerendered"
-                            param-Type="@item"/>
+                        <label class="w-[27.5rem] block" for="card_@item">
+                            <input class="hidden" id="card_@item" type="radio" asp-for="@Model.CustomerCardType" value="@item" />
+                            <component type="typeof(CustomerCard)" render-mode="ServerPrerendered" param-Type="@item" />
+                        </label>
                     }
                 </div>
             </div>

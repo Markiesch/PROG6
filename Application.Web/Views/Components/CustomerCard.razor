@@ -30,19 +30,18 @@
         _ => null
     };
 }
-<div class="uk-margin-small-top">
-    <div class="uk-card uk-card-default uk-card-body uk-padding @(Selected ? "uk-card-primary" : "")">
-        <div class="uk-flex gap-4">
-            @if (img != null)
-            {
-                <div>
-                    <img class="h-12" src="@img" alt="">
-                </div>
-            }
+
+<div class="customer-card uk-margin-small-top uk-card uk-card-default uk-card-body uk-padding @(Selected ? "uk-card-primary" : "")">
+    <div class="uk-flex gap-4">
+        @if (img != null)
+        {
             <div>
-                <h2 class="uk-card-title">@title</h2>
-                <p>@description</p>
+                <img class="h-12" src="@img" alt="">
             </div>
+        }
+        <div>
+            <h2 class="uk-card-title">@title</h2>
+            <p>@description</p>
         </div>
     </div>
 </div>

@@ -152,3 +152,12 @@ input[type="checkbox"]:not(:disabled) + .checkbox-card--vip {
 .progress-stepper a.finished {
   pointer-events: auto;
 }
+
+input:checked + .customer-card {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+input + .customer-card {
+  cursor: pointer;
+}
