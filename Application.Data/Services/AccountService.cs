@@ -33,11 +33,12 @@ public class AccountService(MainContext context, UserManager<User> userManager)
         var user = await context.Users.FindAsync(id);
         return user?.CustomerCardType;
     }
-    
+
     public async Task<string?> CreateAccount(CreateAccountDto dto)
     {
         var user = new User
         {
+            UserName = dto.Email,
             FirstName = dto.FirstName,
             Infix = dto.Infix,
             LastName = dto.LastName,
@@ -47,15 +48,16 @@ public class AccountService(MainContext context, UserManager<User> userManager)
             CustomerCardType = dto.CustomerCardType
         };
         var password = CreateRandomPassword();
-        
+
         var result = await userManager.CreateAsync(user, password);
+
         return result.Succeeded ? password : null;
     }
-    
+
     private string CreateRandomPassword()
     {
         const int length = 12;
-        
+
         var password = new StringBuilder();
         var random = new Random();
         for (var i = 0; i < length; i++)
