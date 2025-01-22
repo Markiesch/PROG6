@@ -41,17 +41,17 @@
                         else if (User.IsInRole(UserRole.Admin.ToString()))
                         {
                             <li class="@(Context.Request.Path.StartsWithSegments("/animals/") ? "uk-active" : "")">
-                                <a href="#">Beestjes beheer <span uk-navbar-parent-icon></span></a>
+                                <a asp-action="Index" asp-controller="Animal">Beestjes beheer <span uk-navbar-parent-icon></span></a>
                                 <div class="uk-navbar-dropdown">
                                     <ul class="uk-nav uk-navbar-dropdown-nav">
                                         <li>
-                                            <a href="#" class="uk-flex-column !items-start">
+                                            <a asp-action="Index" asp-controller="Animal" class="uk-flex-column !items-start">
                                                 <p class="uk-text-bold">Overzicht</p>
                                                 <p class="uk-text-meta">Bekijk een overzicht van alle beestjes</p>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" class="uk-flex-column !items-start">
+                                            <a asp-action="Create" asp-controller="Animal" class="uk-flex-column !items-start">
                                                 <p class="uk-text-bold">Nieuw beestje</p>
                                                 <p class="uk-text-meta">Voeg een nieuw beestje toe, zodat klanten deze kunnen boeken!</p>
                                             </a>
