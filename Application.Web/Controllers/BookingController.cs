@@ -178,6 +178,11 @@ public class BookingController(AnimalService animalService, AccountService accou
         return View("CustomerDetails", model);
     }
 
+    [HttpPost("confirm-booking")]
+    public async Task<IActionResult> ConfirmBooking()
+    {
+        return RedirectToAction("Index", "Home");
+    }
     
     // == Private methods == //
     private async Task<bool> ValidateAnimalSelection(int animalToAddId, List<int> selectedAnimalIds, DateOnly date, CustomerCardType? customerCard)
