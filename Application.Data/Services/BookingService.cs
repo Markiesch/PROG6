@@ -14,7 +14,7 @@ public class BookingService(MainContext mainContext)
             {
                 Id = b.Id,
                 Date = b.Date,
-                Totalprice = b.Totalprice,
+                TotalPrice = b.TotalPrice,
                 Animals = b.BookingDetails.Select(bd => new AnimalDto
                 {
                     Id = bd.Animal.Id,
@@ -37,7 +37,7 @@ public class BookingService(MainContext mainContext)
             {
                 Id = b.Id,
                 Date = b.Date,
-                Totalprice = b.Totalprice,
+                TotalPrice = b.TotalPrice,
                 Animals = b.BookingDetails.Select(a => new AnimalDto
                 {
                     Id = a.Animal.Id,
@@ -61,7 +61,7 @@ public class BookingService(MainContext mainContext)
             {
                 Id = b.Id,
                 Date = b.Date,
-                Totalprice = b.Totalprice,
+                TotalPrice = b.TotalPrice,
                 Animals = b.BookingDetails.Select(a => new AnimalDto
                 {
                     Id = a.Animal.Id,

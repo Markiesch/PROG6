@@ -71,6 +71,8 @@ public class BookingController(AnimalService animalService, AccountService accou
     [HttpGet("booking-overview")]
     public async Task<IActionResult> BookingOverview()
     {
+        // validate session data
+        var date = GetValidDateFromSession();
         var selectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession());
         if (selectedAnimals.Count == 0)
         {
@@ -78,18 +80,38 @@ public class BookingController(AnimalService animalService, AccountService accou
             TempData["AlertDescription"] = "Je moet minimaal één dier selecteren om verder te gaan.";
             return RedirectToAction("PickYourAnimal");
         }
-        
-        if (GetCustomerDetailsFromSession() == null)
+        var customerFromSession = GetCustomerDetailsFromSession();
+        if (customerFromSession == null)
         {
             TempData["Alert"] = "Vul je gegevens in";
             TempData["AlertDescription"] = "Je moet je gegevens invullen om verder te gaan.";
             return RedirectToAction("CustomerDetails");
         }
         
+        // get customer data
+        var customer = new CustomerDto
+        {
+            FullName = customerFromSession["name"],
+            Address = customerFromSession["address"],
+            Email = string.IsNullOrEmpty(customerFromSession["email"]) ? null : customerFromSession["email"],
+            PhoneNumber = string.IsNullOrEmpty(customerFromSession["phone"]) ? null : customerFromSession["phone"]
+        };
+        var customerCardType = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
+        
+        // get price and discounts
+        var subTotalPrice = DiscountRules.CalculateSubTotalPrice(selectedAnimals);
+        var discounts = DiscountRules.GetDiscounts(selectedAnimals, date, customerCardType);
+        var totalPrice = DiscountRules.CalculateTotalPrice(subTotalPrice, discounts);
+        
+        // show view
         var viewModel = new BookingOverviewViewModel
         {
             Date = GetValidDateFromSession(),
-            SelectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession())
+            SelectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession()),
+            Customer = customer,
+            Discounts = discounts,
+            SubTotalPrice = subTotalPrice,
+            TotalPrice = totalPrice
         };
         return View(viewModel);
     }

@@ -16,14 +16,28 @@ public class Booking
     
     [Required]
     [Column(TypeName = "decimal(18, 2)")]
-    public decimal Totalprice { get; init; }
+    public decimal TotalPrice { get; init; }
 
     [Required]
-    public int CustomerId { get; init; }
+    public int? CustomerId { get; init; }
+    
+    [Required]
+    public string OrderName { get; init; } = null!;
+
+    [Required]
+    public string OrderAddress { get; init; } = null!;
+    
+    [Required]
+    [EmailAddress]
+    public string? Email { get; init; }
+    
+    [Required]
+    [Phone]
+    public string? PhoneNumber { get; init; }
     
     [ForeignKey("CustomerId")]
     [InverseProperty("Bookings")]
-    public User Customer { get; init; } = null!;
+    public User? Customer { get; init; }
     
     [InverseProperty("Booking")]
     public ICollection<BookingDetail> BookingDetails { get; init; } = new List<BookingDetail>();
