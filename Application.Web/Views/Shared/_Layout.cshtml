@@ -13,6 +13,7 @@
     <link rel="icon" type="image/x-icon" href="~/img/favicon.ico"/>
 </head>
 <body>
+<div class="spinner" uk-spinner="ratio: 4"></div>
 <header class="uk-position-relative uk-position-z-index-high">
     <nav class="uk-navbar-container py-2">
         <div class="uk-container uk-container-large uk-margin-auto">
@@ -83,7 +84,7 @@
 <div class="uk-container">
     @if (TempData["Alert"] != null)
     {
-        <div class="uk-alert uk-alert-danger uk-margin-top" uk-alert>
+        <div class="uk-alert uk-alert-danger bg-white/[0.4] uk-margin-bottom uk-position-bottom-center uk-position-fixed z-[1000] backdrop-blur-lg" uk-alert>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                  class="lucide lucide-info">
@@ -92,7 +93,7 @@
                 <path d="M12 8h.01"/>
             </svg>
             <a href class="uk-alert-close" uk-close></a>
-            <div class="uk-alert-title">@TempData["Alert"]</div>
+            <div class="uk-alert-title pe-7">@TempData["Alert"]</div>
             @if (TempData["AlertDescription"] != null)
             {
                 <div class="uk-alert-description">@TempData["AlertDescription"]</div>

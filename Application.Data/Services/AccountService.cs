@@ -1,5 +1,5 @@
 ﻿using Application.Data.Dto;
-using Microsoft.EntityFrameworkCore;
+using Application.Data.Models;
 
 namespace Application.Data.Services;
 
@@ -24,5 +24,11 @@ public class AccountService(MainContext context)
             PhoneNumber = user.PhoneNumber,
             CustomerCardType = user.CustomerCardType
         };
+    }
+
+    public async Task<CustomerCardType?> GetCustomerCardFromUser(int id)
+    {
+        var user = await context.Users.FindAsync(id);
+        return user?.CustomerCardType;
     }
 }

@@ -30,6 +30,21 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
         return await bookingService.GetBookingsByAnimalId(id, query);
     }
 
+    public async Task<List<AnimalDto>> GetAnimalsWithAvailability(DateOnly date)
+    {
+        return await mainContext.Animals
+            .Select(a => new AnimalDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Type = a.Type,
+                Price = a.Price,
+                Image = a.Image,
+                IsAvailable = !a.BookingDetails.Any(bd => DateOnly.FromDateTime(bd.Booking.Date) == date)
+            })
+            .ToListAsync();
+    }
+    
     public async Task<AnimalDto?> GetAnimal(int id)
     {
         return await mainContext.Animals
@@ -45,10 +60,11 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
             })
             .FirstOrDefaultAsync();
     }
-
-    public async Task<List<AnimalDto>> GetAnimalsWithAvailability(DateOnly date)
+    
+    public async Task<List<AnimalDto>> GetAnimalsByIds(List<int> ids)
     {
         return await mainContext.Animals
+            .Where(a => ids.Contains(a.Id))
             .Select(a => new AnimalDto
             {
                 Id = a.Id,
@@ -56,12 +72,11 @@ public class AnimalService(MainContext mainContext, BookingService bookingServic
                 Type = a.Type,
                 Price = a.Price,
                 Image = a.Image,
-                IsAvailable = a.BookingDetails.Any(bd => DateOnly.FromDateTime(bd.Booking.Date) == date)
+                IsAvailable = true
             })
             .ToListAsync();
     }
-
-
+    
     public async Task<bool> UpdateAnimal(int id, UpdateAnimalDto animal)
     {
         try
