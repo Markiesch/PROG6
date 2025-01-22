@@ -47,9 +47,9 @@
 
                         <div>
                             <label for="adres" class="uk-form-label">Adres*</label>
-                            <input type="text" id="adres" class="uk-input" asp-for="@Model.Adres"/>
+                            <input type="text" id="adres" class="uk-input" asp-for="@Model.Address"/>
                             <span class="uk-form-help uk-margin-small-top uk-text-danger"
-                                  asp-validation-for="Adres"></span>
+                                  asp-validation-for="Address"></span>
                         </div>
 
                         <div>
@@ -68,7 +68,7 @@
 
                         <div>
                             <label for="password" class="uk-form-label">Wachtwoord</label>
-                            <input type="text" id="password" class="uk-input" readonly/>
+                            <input type="text" id="password" class="uk-input" readonly placeholder="************" />
                             <div class="uk-form-help uk-margin-small-top">
                                 Het wachtwoord wordt automatisch gegenereerd.
                             </div>

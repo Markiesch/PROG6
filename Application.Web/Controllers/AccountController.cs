@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Application.Data.Dto;
 using Application.Data.Services;
 using Application.Web.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,7 @@ public class AccountController(AccountService accountService, BookingService boo
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         var account = await accountService.GetAccount(userId);
-        
+
         if (account == null)
         {
             return NotFound();
@@ -26,25 +27,25 @@ public class AccountController(AccountService accountService, BookingService boo
         {
             Account = account
         };
-        
+
         return View(model);
     }
-    
+
     [HttpGet("bookings")]
     [Authorize(Roles = "Customer")]
     public async Task<IActionResult> Bookings(string? query)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var bookings = await bookingService.GetBookings(userId, query);
-        
+
         var model = new BookingListViewModel
         {
             Bookings = bookings
         };
-        
+
         return View(model);
     }
-    
+
     [HttpGet("bookings/{id:int}")]
     [Authorize(Roles = "Customer")]
     public async Task<IActionResult> Booking(int id)
@@ -53,7 +54,7 @@ public class AccountController(AccountService accountService, BookingService boo
 
         var booking = await bookingService.GetBooking(userId, id);
         var account = await accountService.GetAccount(userId);
-        
+
         if (booking == null || account == null)
         {
             return NotFound();
@@ -64,10 +65,10 @@ public class AccountController(AccountService accountService, BookingService boo
             Booking = booking,
             Account = account
         };
-        
+
         return View(model);
     }
-    
+
     [HttpPost("bookings/{id:int}/delete")]
     [Authorize(Roles = "Customer")]
     public async Task<IActionResult> DeleteBooking(int id)
@@ -75,27 +76,57 @@ public class AccountController(AccountService accountService, BookingService boo
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var res = await bookingService.DeleteBooking(userId, id);
         if (!res) return NotFound();
-        
+
         return RedirectToAction("Bookings");
     }
-    
+
     [HttpGet("create")]
     public IActionResult Create()
     {
         var model = new AccountCreateViewModel();
-        
+
         return View(model);
     }
-    
+
     [HttpPost("create")]
-    public IActionResult Create(AccountCreateViewModel model)
+    public async Task<IActionResult> Create(AccountCreateViewModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
-        
-        // Save the customer to the database
-        return RedirectToAction("Index");
+
+        var dto = new CreateAccountDto
+        {
+            FirstName = model.FirstName,
+            Infix = model.Infix,
+            LastName = model.LastName,
+            Email = model.Email,
+            Address = model.Address,
+            PhoneNumber = model.PhoneNumber,
+            CustomerCardType = model.CustomerCardType
+        };
+
+        var password = await accountService.CreateAccount(dto);
+
+        if (password == null)
+        {
+            ModelState.AddModelError("", "Failed to create account");
+            return View(model);
+        }
+
+        return CreateSuccess(model.Email, password);
+    }
+    
+    [HttpGet("create/success")]
+    public IActionResult CreateSuccess(string email, string password)
+    {
+        var model = new AccountCreateSuccessViewModel
+        {
+            Email = email,
+            Password = password,
+        };
+
+        return View(model);
     }
 }
