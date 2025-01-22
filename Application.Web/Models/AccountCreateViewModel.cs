@@ -14,7 +14,6 @@ public class AccountCreateViewModel
     public string Address { get; set; }
     [Required(ErrorMessage = "Email is verplicht")]
     public string Email { get; set; }
-    [Required(ErrorMessage = "Telefoonnummer is verplicht")]
-    public string PhoneNumber { get; set; }
+    public string? PhoneNumber { get; set; }
     public CustomerCardType? CustomerCardType { get; set; }
 }
