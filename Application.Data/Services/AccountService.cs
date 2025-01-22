@@ -34,8 +34,16 @@ public class AccountService(MainContext context, UserManager<User> userManager)
         return user?.CustomerCardType;
     }
 
-    public async Task<string?> CreateAccount(CreateAccountDto dto)
+    public async Task<(string?, Dictionary<string, string> Errors)> CreateAccount(CreateAccountDto dto)
     {
+        var errors = new Dictionary<string, string>();
+        
+        if (await userManager.FindByNameAsync(dto.Email) != null)
+        {
+            errors["Email"] = "Deze email is al in gebruik";
+            return (null, errors);
+        }
+        
         var user = new User
         {
             UserName = dto.Email,
@@ -51,7 +59,7 @@ public class AccountService(MainContext context, UserManager<User> userManager)
 
         var result = await userManager.CreateAsync(user, password);
 
-        return result.Succeeded ? password : null;
+        return (result.Succeeded ? password : null, errors);
     }
 
     private string CreateRandomPassword()

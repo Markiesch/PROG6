@@ -107,11 +107,19 @@ public class AccountController(AccountService accountService, BookingService boo
             CustomerCardType = model.CustomerCardType
         };
 
-        var password = await accountService.CreateAccount(dto);
+        var (password, errors) = await accountService.CreateAccount(dto);
+        
+        foreach (var (key, value) in errors)
+        {
+            ModelState.AddModelError(key, value);
+        }
 
         if (password == null)
         {
-            ModelState.AddModelError("", "Failed to create account");
+            if (errors.Count == 0)
+            {
+                ModelState.AddModelError("", "Er is iets misgegaan bij het aanmaken van het account");
+            }
             return View(model);
         }
 
