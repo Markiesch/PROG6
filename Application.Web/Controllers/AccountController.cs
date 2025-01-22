@@ -78,4 +78,24 @@ public class AccountController(AccountService accountService, BookingService boo
         
         return RedirectToAction("Bookings");
     }
+    
+    [HttpGet("create")]
+    public IActionResult Create()
+    {
+        var model = new AccountCreateViewModel();
+        
+        return View(model);
+    }
+    
+    [HttpPost("create")]
+    public IActionResult Create(AccountCreateViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        
+        // Save the customer to the database
+        return RedirectToAction("Index");
+    }
 }

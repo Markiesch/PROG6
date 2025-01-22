@@ -60,7 +60,7 @@
                                 </div>
                             </li>
                             <li class="@(Context.Request.Path.StartsWithSegments("/animals/") ? "uk-active" : "")">
-                                <a href="#">Klant toevoegen</a>
+                                <a asp-action="Create" asp-controller="Account">Klant toevoegen</a>
                             </li>
                         }
                     </ul>
