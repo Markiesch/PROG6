@@ -74,7 +74,7 @@ public static class DiscountRules
                     .TakeWhile(letter => animal.Name.ToLower().Contains(letter))
                     .Sum(_ => AlphabeticalPercentage);
             })
-            .Sum();
+            .Max();
     }
     
     // Customer card discount
