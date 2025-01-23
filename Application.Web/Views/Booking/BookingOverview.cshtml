@@ -11,7 +11,9 @@
     <div class="uk-card uk-card-default uk-width-expand">
         <div class="uk-card-header flex uk-flex-middle uk-flex-between uk-margin-bottom">
             <h1>Stap 4 - Controleer je boeking</h1>
-            <a asp-controller="Booking" asp-action="ConfirmBooking" class="uk-button uk-button-primary">Boeking bevestigen</a>
+            <form asp-controller="Booking" asp-action="ConfirmBooking" method="post">
+                <button type="submit" class="uk-button uk-button-primary">Boeking bevestigen</button>
+            </form>
         </div>
         <div class="uk-card-body">
             <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-bottom">

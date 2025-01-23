@@ -17,8 +17,7 @@ public class Booking
     [Required]
     [Column(TypeName = "decimal(18, 2)")]
     public decimal TotalPrice { get; init; }
-
-    [Required]
+    
     public int? CustomerId { get; init; }
     
     [Required]
@@ -27,12 +26,8 @@ public class Booking
     [Required]
     public string OrderAddress { get; init; } = null!;
     
-    [Required]
-    [EmailAddress]
     public string? Email { get; init; }
     
-    [Required]
-    [Phone]
     public string? PhoneNumber { get; init; }
     
     [ForeignKey("CustomerId")]

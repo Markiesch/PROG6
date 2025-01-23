@@ -6,11 +6,13 @@ using Application.Data.Services;
 using Application.Web.Models;
 using Application.Web.Rules;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using static System.Int32;
 
 namespace Application.Web.Controllers;
 [Route("/booking")]
 
-public class BookingController(AnimalService animalService, AccountService accountService) : Controller
+public class BookingController(AnimalService animalService, AccountService accountService, BookingService bookingService) : Controller
 {
     [HttpGet("pick-your-animal/")]
     public async Task<IActionResult> PickYourAnimal()
@@ -18,7 +20,7 @@ public class BookingController(AnimalService animalService, AccountService accou
         var date = GetValidDateFromSession();
         var animals = await animalService.GetAnimalsWithAvailability(date);
         var selectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession());
-        var customerCard = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
+        var customerCard = await accountService.GetCustomerCardFromUser(Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
         
         var viewModel = new PickYourAnimalViewModel
         {
@@ -45,7 +47,7 @@ public class BookingController(AnimalService animalService, AccountService accou
         if (User.Identity is { IsAuthenticated: true })
         {
             bool saved = SaveCustomerDetailsToSession(null, 
-                await accountService.GetAccount(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1")));
+                await accountService.GetAccount(Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1")));
             if (saved) return RedirectToAction("BookingOverview");
             
             TempData["Alert"] = "Er is iets misgegaan";
@@ -98,7 +100,7 @@ public class BookingController(AnimalService animalService, AccountService accou
             Email = string.IsNullOrEmpty(customerFromSession["email"]) ? null : customerFromSession["email"],
             PhoneNumber = string.IsNullOrEmpty(customerFromSession["phone"]) ? null : customerFromSession["phone"]
         };
-        var customerCardType = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
+        var customerCardType = await accountService.GetCustomerCardFromUser(Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
         
         // get price and discounts
         var subTotalPrice = DiscountRules.CalculateSubTotalPrice(selectedAnimals);
@@ -119,6 +121,22 @@ public class BookingController(AnimalService animalService, AccountService accou
             TotalPrice = totalPrice
         };
         return View(viewModel);
+    }
+    
+    [HttpGet("confirmation")]
+    public async Task<IActionResult> Confirmation()
+    {
+        var bookingId = HttpContext.Session.GetString("BookingId");
+        HttpContext.Session.Clear();
+        if (bookingId == null) return NotFound();
+        
+        // get user
+        var nameIdentifier = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        int? userId = !nameIdentifier.IsNullOrEmpty() && TryParse(nameIdentifier, out var loggedInUserId) && loggedInUserId > 0 ? loggedInUserId : null;
+        
+        // get booking
+        var booking = await bookingService.GetBooking(userId, Parse(bookingId));
+        return View(booking);
     }
     
     // == POST methods == //
@@ -152,7 +170,7 @@ public class BookingController(AnimalService animalService, AccountService accou
         // validate selection
         int animalToAddId = selectedAnimalIds.Find(id => !GetAnimalIdsFromSession().Contains(id));
         DateOnly bookingDate = GetValidDateFromSession();
-        var customerCard = await accountService.GetCustomerCardFromUser(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
+        var customerCard = await accountService.GetCustomerCardFromUser(Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
         
         if (animalToAddId == 0)
         {
@@ -182,11 +200,48 @@ public class BookingController(AnimalService animalService, AccountService accou
         TempData["AlertDescription"] = "Er is iets misgegaan bij het opslaan van de (contact)gegevens. Probeer het opnieuw.";
         return View("CustomerDetails", model);
     }
-
+    
     [HttpPost("confirm-booking")]
     public async Task<IActionResult> ConfirmBooking()
     {
-        return RedirectToAction("Index", "Home");
+        // booking
+        var date = GetValidDateFromSession();
+        var selectedAnimals = await animalService.GetAnimalsByIds(GetAnimalIdsFromSession());
+        var customerCard = await accountService.GetCustomerCardFromUser(Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1"));
+        var subTotalPrice = DiscountRules.CalculateSubTotalPrice(selectedAnimals);
+        var discounts = DiscountRules.GetDiscounts(selectedAnimals, date, customerCard);
+        var totalPrice = DiscountRules.CalculateTotalPrice(subTotalPrice, discounts);
+        var bookingDto = new BookingDto
+        {
+            Id = 0,
+            Date = date.ToDateTime(new TimeOnly(12, 00)),
+            TotalPrice = totalPrice,
+            Animals = selectedAnimals 
+        };
+        
+        // customer
+        var customer = GetCustomerDetailsFromSession();
+        if (customer == null) return NotFound();
+        var customerDto = new CustomerDto
+        {
+            FullName = customer["name"],
+            Address = customer["address"],
+            Email = string.IsNullOrEmpty(customer["email"]) ? null : customer["email"],
+            PhoneNumber = string.IsNullOrEmpty(customer["phone"]) ? null : customer["phone"]
+        };
+        
+        // logged in customer
+        var nameIdentifier = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        int? customerId = !nameIdentifier.IsNullOrEmpty() && TryParse(nameIdentifier, out var id) && id > 0 ? id : null;
+        
+        // create booking
+        var result = await bookingService.CreateBooking(bookingDto, customerDto, customerId);
+        if (result == null) return NotFound();
+        
+        // clear session and redirect
+        HttpContext.Session.Clear();
+        HttpContext.Session.SetString("BookingId", result.ToString()!);
+        return RedirectToAction("Confirmation");
     }
     
     // == Private methods == //
