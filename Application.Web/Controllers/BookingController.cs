@@ -127,7 +127,6 @@ public class BookingController(AnimalService animalService, AccountService accou
     public async Task<IActionResult> Confirmation()
     {
         var bookingId = HttpContext.Session.GetString("BookingId");
-        HttpContext.Session.Clear();
         if (bookingId == null) return NotFound();
         
         // get user

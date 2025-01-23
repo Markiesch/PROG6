@@ -3,5 +3,16 @@
     ViewData["Title"] = "Boeking bevestiging";
 }
 
-<h1>bevestiging</h1>
-booking: @Model.Id
+<div class="text-center uk-margin-auto uk-position-relative">
+    <p class="uk-h3">Boekingsnummer #@Model.Id</p>
+    <h1 class="primary">
+        <span class="text-highlight">Bedankt</span> voor je <span class="text-highlight">Boeking</span>!
+    </h1>
+    <p class="max-w-[80%] uk-margin-auto">
+        Als je bent ingelogd, kun je jouw boeking terugvinden bij <a class="uk-link" asp-controller="Account" asp-action="Bookings">Mijn boekingen</a>.
+        Mocht je niet ingelogd zijn, bekijk dan de bevestigingsmail die je hebt ontvangen. <br/>
+        Voor vragen of wijzigen van je boeking (zonder account), neem dan contact met ons op via <a class="uk-link" href="mailto:#">e-mail</a>.
+    </p>
+    <a class="uk-margin-medium-top uk-button uk-button-primary" href="/">Terug naar home</a>
+</div>
+<img src="~/img/banner-confirmation.png" class="w-full uk-position-relative uk-position-z-index-negative mt-[-5rem]" alt="Banner" />
