@@ -55,8 +55,30 @@
                         <p>&euro;@animal.Price</p>
                     </div>
                 }
-                <hr class="my-2"/>
+                
                 <div class="uk-flex uk-flex-between uk-text-bold">
+                    <p>Subtotaal</p>
+                    <p>&euro;@Model.SubTotal</p>
+                </div>
+                <hr class="my-2"/>
+                
+                @if (Model.Discounts != null)
+                {
+                    <div class="uk-flex uk-flex-between uk-text-bold">
+                        <p>Korting</p>
+                        <p>Percentage</p>
+                    </div>
+                    foreach (var discount in Model.Discounts)
+                    {
+                        <div class="uk-flex uk-flex-between uk-text-muted">
+                            <p>@discount.Key</p>
+                            <p>@discount.Value&percnt;</p>
+                        </div>
+                    }
+                }
+                
+                <hr class="my-2"/>
+                <div class="uk-flex uk-flex-between uk-text-bold uk-text-large">
                     <p>Totaal</p>
                     <p>&euro;@Model.Booking.TotalPrice</p>
                 </div>
