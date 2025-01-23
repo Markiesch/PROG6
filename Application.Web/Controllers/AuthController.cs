@@ -14,7 +14,7 @@ public class AuthController(AuthService authService) : Controller
     }
 
     [HttpPost("/login")]
-    public async Task<IActionResult> Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
     {
         if (!ModelState.IsValid) return View("Login", model);
 
@@ -27,8 +27,10 @@ public class AuthController(AuthService authService) : Controller
             return View("Login", model);
         }
 
+        if (returnUrl != null)
+            return Redirect(returnUrl);
         if (User.IsInRole(UserRole.Admin.ToString()))
-            return RedirectToAction("Index", "Animals");
+            return RedirectToAction("Index", "Animal");
         if (User.IsInRole(UserRole.Customer.ToString()))
             return RedirectToAction("Bookings", "Account");
 

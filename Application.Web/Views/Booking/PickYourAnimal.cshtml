@@ -68,12 +68,12 @@
                     <p class="uk-text-muted">@Model.Date.ToString("dd-MM-yyyy")</p>
                 </div>
                 <div class="uk-margin-bottom">
-                    <p class="uk-text-bold mb-1">Beestjes</p>
+                    <p class="uk-text-bold uk-margin-small-bottom">Beestjes</p>
                     <div class="uk-flex gap-2 uk-flex-wrap">
                         @foreach(var animal in Model.SelectedAnimals)
                         {
                             <div class="uk-card uk-card-default uk-padding uk-text-center uk-width-auto">
-                                <img width="40" src="@animal.Image" alt="@animal.Name"/>
+                                <img width="40" class="uk-margin-auto" src="@animal.Image" alt="@animal.Name"/>
                                 <h4 class="uk-card-title uk-margin-top">@animal.Name</h4>
                             </div>
                         }
@@ -83,6 +83,16 @@
                         }
                     </div>
                 </div>
+                @if (Model.Subtotal is > 0)
+                {
+                    <div class="uk-margin-bottom">
+                        <div class="uk-flex uk-flex-between">
+                            <p class="uk-text-bold">Subtotaal</p>
+                            <p class="uk-text-bold">&euro;@Model.Subtotal</p>
+                        </div>
+                        <p class="uk-text-muted uk-text-small italic">Exclusief korting</p>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -95,11 +105,11 @@
         </div>
         <div class="uk-modal-body">
             <h3 class="uk-text-bold">Combinaties</h3>
-            <ul class="uk-list uk-list-disc uk-margin-bottom">
+            <ul class="uk-list uk-list-hyphen uk-margin-bottom">
                 <li uk-tooltip="Nom nom nom">Je mag geen beestje boeken met het type ‘Leeuw’ of ‘IJsbeer’ als je ook een beestje boekt van het type ‘Boerderijdier</li>
             </ul>
             <h3 class="uk-text-bold">Tijds- en seizoensgebonden</h3>
-            <ul class="uk-list uk-list-disc uk-margin-bottom">
+            <ul class="uk-list uk-list-hyphen uk-margin-bottom">
                 <li uk-tooltip="Dieren in pak werken alleen doordeweeks">Je mag geen beestje boeken met de naam ‘Pinguïn’ in het weekend</li>
                 <li uk-tooltip="Brrrr – Veelste koud">Je mag geen beestje boeken van het type ‘Woestijn’ in de maanden oktober t/m februari</li>
                 <li uk-tooltip="Some People Are Worth Melting For. ~ Olaf">Je mag geen beestje boeken van het type ‘Sneeuw’ in de maanden juni t/m augustus</li>
@@ -107,7 +117,7 @@
             <h3 class="uk-text-bold">
                 Klantenkaarten
             </h3>
-            <ul class="uk-list uk-list-disc">
+            <ul class="uk-list uk-list-hyphen">
                 <li>Klanten zonder klantenkaart mogen maximaal 3 dieren boeken</li>
                 <li>Klanten met een zilveren klantenkaart mogen 1 dier extra boeken</li>
                 <li>Klanten met een gouden kaart mogen zoveel dieren boeken als ze willen</li>
@@ -119,16 +129,6 @@
         </div>
     </div>
 </div>
-
-@{
-    var customerCard = Model.CustomerCard switch
-    {
-        CustomerCardType.Silver => CustomerCardType.Silver.ToString(),
-        CustomerCardType.Gold => CustomerCardType.Gold.ToString(),
-        CustomerCardType.Platinum => CustomerCardType.Platinum.ToString(),
-        _ => "null"
-    };
-}
 
 @section Scripts
 {
