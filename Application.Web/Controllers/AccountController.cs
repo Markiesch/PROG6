@@ -60,14 +60,11 @@ public class AccountController(AccountService accountService, BookingService boo
             return NotFound();
         }
         
-        var subTotal = DiscountRules.CalculateSubTotalPrice(booking.Animals.ToList());
         var discounts = DiscountRules.GetDiscounts(booking.Animals.ToList(), DateOnly.FromDateTime(booking.Date), account.CustomerCardType);
-
         var model = new BookingDetailsViewModel
         {
             Booking = booking,
             Account = account,
-            SubTotal = subTotal,
             Discounts = discounts
         };
         
