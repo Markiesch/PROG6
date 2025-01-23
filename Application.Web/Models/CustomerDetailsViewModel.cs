@@ -7,6 +7,7 @@ public class CustomerDetailsViewModel
 {
     public required DateOnly Date { get; init; }
     public required IEnumerable<AnimalDto> SelectedAnimals { get; set; }
+    public decimal? Subtotal { get; init; }
     
     [Required(ErrorMessage = "Voornaam is verplicht")]
     public required string FirstName { get; init; }

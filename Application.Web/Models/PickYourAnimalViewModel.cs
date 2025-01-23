@@ -9,4 +9,5 @@ public class PickYourAnimalViewModel
     public required IEnumerable<AnimalDto> Animals { get; init; }
     public required IEnumerable<AnimalDto> SelectedAnimals { get; init; }
     public CustomerCardType? CustomerCard { get; init; } 
+    public decimal? Subtotal { get; init; }
 }

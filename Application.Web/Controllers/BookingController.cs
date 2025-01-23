@@ -25,7 +25,8 @@ public class BookingController(AnimalService animalService, AccountService accou
             Date = date, 
             Animals = animals,
             SelectedAnimals = selectedAnimals,
-            CustomerCard = customerCard
+            CustomerCard = customerCard,
+            Subtotal = DiscountRules.CalculateSubTotalPrice(selectedAnimals)
         };
         return View(viewModel);
     }
@@ -56,6 +57,7 @@ public class BookingController(AnimalService animalService, AccountService accou
         {
             Date = GetValidDateFromSession(),
             SelectedAnimals = selectedAnimals,
+            Subtotal = DiscountRules.CalculateSubTotalPrice(selectedAnimals),
             
             FirstName = string.Empty,
             Infix = string.Empty,
@@ -102,6 +104,9 @@ public class BookingController(AnimalService animalService, AccountService accou
         var subTotalPrice = DiscountRules.CalculateSubTotalPrice(selectedAnimals);
         var discounts = DiscountRules.GetDiscounts(selectedAnimals, date, customerCardType);
         var totalPrice = DiscountRules.CalculateTotalPrice(subTotalPrice, discounts);
+        
+        // show if user is logged in
+        ViewData["LoggedIn"] = User.Identity is { IsAuthenticated: true };
         
         // show view
         var viewModel = new BookingOverviewViewModel
