@@ -88,8 +88,8 @@
                     <p class="uk-text-bold">Klantenkaart</p>
 
                     <label class="w-[27.5rem] block" for="card_none">
-                        <input class="hidden" id="card_none" type="radio" asp-for="@Model.CustomerCardType" value="@(null)">
-                        <component type="typeof(CustomerCard)" render-mode="ServerPrerendered" param-Selected="@(Model.CustomerCardType == null)" />
+                        <input class="hidden" id="card_none" type="radio" asp-for="@Model.CustomerCardType" value="@(null)" checked="@(Model.CustomerCardType == null)" />
+                        <component type="typeof(CustomerCard)" render-mode="ServerPrerendered" />
                     </label>
                     @foreach (var item in Enum.GetValues(typeof(CustomerCardType)))
                     {
