@@ -19,7 +19,7 @@
             <p>@Model.Email</p>
 
             <p class="font-bold mt-4">Wachtwoord</p>
-            <p>@Model.Password</p>
+            <p id="password">@Model.Password</p>
         </div>
 
         <div class="uk-flex uk-flex-right uk-margin-top">
@@ -33,7 +33,8 @@
 @section Scripts {
     <script>
         function copyPassword() {
-            navigator.clipboard.writeText("@Model.Password");
+            const content = document.getElementById("password").innerText;
+            navigator.clipboard.writeText(content);
         }
     </script>
 }
