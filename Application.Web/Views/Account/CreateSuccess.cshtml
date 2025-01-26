@@ -1,0 +1,40 @@
+@model AccountCreateSuccessViewModel
+@{
+    ViewData["Title"] = "Nieuw account";
+}
+
+<div class="uk-card uk-card-default uk-margin-top max-w-[40rem] mx-auto">
+    <div class="uk-card-header">
+        <h1 class="uk-margin-bottom">Inloggegevens bekijken</h1>
+    </div>
+
+    <div class="uk-card-body uk-margin-top">
+        <p class="text-red-500 font-bold flex items-center">
+            <uk-icon icon="circle-alert" class="uk-margin-small-right"></uk-icon>
+            Let op! Je kan het wachtwoord maar één keer bekijken.
+        </p>
+
+        <div>
+            <p class="font-bold mt-4">E-mail</p>
+            <p>@Model.Email</p>
+
+            <p class="font-bold mt-4">Wachtwoord</p>
+            <p id="password">@Model.Password</p>
+        </div>
+
+        <div class="uk-flex uk-flex-right uk-margin-top">
+            <a asp-action="Index" asp-controller="Home"
+               class="uk-button uk-button-danger uk-margin-xsmall-left">Sluiten</a>
+            <button onclick="copyPassword()" class="uk-button uk-button-primary uk-margin-xsmall-left">Wachtwoord kopiëren</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function copyPassword() {
+            const content = document.getElementById("password").innerText;
+            navigator.clipboard.writeText(content);
+        }
+    </script>
+}

@@ -1,0 +1,108 @@
+@using Application.Data.Models
+@using Application.Web.Views.Components
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Data.SqlClient.DataClassification
+@model AccountCreateViewModel
+@{
+    ViewData["Title"] = "Nieuw account";
+}
+
+<form asp-action="Create" method="post">
+    <div class="uk-card uk-card-default uk-margin-top">
+        <div class="uk-card-header">
+            <h1 class="uk-margin-bottom">Nieuw account</h1>
+        </div>
+
+
+        <div class="uk-card-body uk-margin-top">
+
+            <p class="text-amber-500 font-bold flex items-center uk-margin-bottom">
+                <uk-icon icon="circle-alert" class="uk-margin-small-right"></uk-icon>
+                Let op! Vergeet niet het wachtwoord te bewaren na het aanmaken van het account.
+            </p>
+
+            <div class="flex">
+                <div class="flex-grow-1">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label for="firstname" class="uk-form-label">Voornaam*</label>
+                            <input type="text" id="firstname" class="uk-input" asp-for="@Model.FirstName"/>
+                            <span class="uk-form-help uk-margin-small-top uk-text-danger"
+                                  asp-validation-for="FirstName"></span>
+                        </div>
+                        <div>
+                            <label for="infix" class="uk-form-label">Tussenvoegsel</label>
+                            <input type="text" id="infix" class="uk-input" asp-for="@Model.Infix"/>
+                            <span class="uk-form-help uk-margin-small-top uk-text-danger"
+                                  asp-validation-for="Infix"></span>
+                        </div>
+                        <div>
+                            <label for="lastname" class="uk-form-label">Achternaam*</label>
+                            <input type="text" id="lastname" class="uk-input" asp-for="@Model.LastName"/>
+                            <span class="uk-form-help uk-margin-small-top uk-text-danger"
+                                  asp-validation-for="LastName"></span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+
+                        <div>
+                            <label for="adres" class="uk-form-label">Adres*</label>
+                            <input type="text" id="adres" class="uk-input" asp-for="@Model.Address"/>
+                            <span class="uk-form-help uk-margin-small-top uk-text-danger"
+                                  asp-validation-for="Address"></span>
+                        </div>
+
+                        <div>
+                            <label for="phone" class="uk-form-label">Telefoonnummer</label>
+                            <input type="text" id="phone" class="uk-input" asp-for="@Model.PhoneNumber"/>
+                            <span class="uk-form-help uk-margin-small-top uk-text-danger"
+                                  asp-validation-for="PhoneNumber"></span>
+                        </div>
+
+                        <div>
+                            <label for="email" class="uk-form-label">Email*</label>
+                            <input type="text" id="email" class="uk-input" asp-for="@Model.Email"/>
+                            <span class="uk-form-help uk-margin-small-top uk-text-danger"
+                                  asp-validation-for="Email"></span>
+                        </div>
+
+                        <div>
+                            <label for="password" class="uk-form-label">Wachtwoord</label>
+                            <input type="text" id="password" class="uk-input" readonly placeholder="************"/>
+                            <div class="uk-form-help uk-margin-small-top">
+                                Het wachtwoord wordt automatisch gegenereerd.
+                            </div>
+                        </div>
+                    </div>
+
+                    @Html.ValidationSummary(true, string.Empty, new { @class = "uk-text-danger" })
+
+                </div>
+
+                <div class="px-6">
+                    <hr class="uk-divider-vertical h-full"/>
+                </div>
+
+                <div>
+                    <p class="uk-text-bold">Klantenkaart</p>
+
+                    <label class="w-[27.5rem] block" for="card_none">
+                        <input class="hidden" id="card_none" type="radio" asp-for="@Model.CustomerCardType" value="@(null)" checked="@(Model.CustomerCardType == null)" />
+                        <component type="typeof(CustomerCard)" render-mode="ServerPrerendered" />
+                    </label>
+                    @foreach (var item in Enum.GetValues(typeof(CustomerCardType)))
+                    {
+                        <label class="w-[27.5rem] block" for="card_@item">
+                            <input class="hidden" id="card_@item" type="radio" asp-for="@Model.CustomerCardType" value="@item" />
+                            <component type="typeof(CustomerCard)" render-mode="ServerPrerendered" param-Type="@item" />
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="uk-flex uk-flex-right uk-margin-top">
+                <button type="submit" class="uk-button uk-button-primary uk-margin-xsmall-left">Opslaan</button>
+            </div>
+        </div>
+    </div>
+</form>
