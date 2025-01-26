@@ -1,4 +1,6 @@
+using System.Collections;
 using Application.Data.Dto;
+using Application.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Data.Services;
@@ -14,7 +16,7 @@ public class BookingService(MainContext mainContext)
             {
                 Id = b.Id,
                 Date = b.Date,
-                Totalprice = b.Totalprice,
+                TotalPrice = b.TotalPrice,
                 Animals = b.BookingDetails.Select(bd => new AnimalDto
                 {
                     Id = bd.Animal.Id,
@@ -37,7 +39,7 @@ public class BookingService(MainContext mainContext)
             {
                 Id = b.Id,
                 Date = b.Date,
-                Totalprice = b.Totalprice,
+                TotalPrice = b.TotalPrice,
                 Animals = b.BookingDetails.Select(a => new AnimalDto
                 {
                     Id = a.Animal.Id,
@@ -53,7 +55,7 @@ public class BookingService(MainContext mainContext)
         return bookings;
     }
 
-    public async Task<BookingDto?> GetBooking(int userId, int bookingId)
+    public async Task<BookingDto?> GetBooking(int? userId, int bookingId)
     {
         var booking = await mainContext.Bookings
             .Where(b => b.CustomerId == userId && b.Id == bookingId)
@@ -61,7 +63,7 @@ public class BookingService(MainContext mainContext)
             {
                 Id = b.Id,
                 Date = b.Date,
-                Totalprice = b.Totalprice,
+                TotalPrice = b.TotalPrice,
                 Animals = b.BookingDetails.Select(a => new AnimalDto
                 {
                     Id = a.Animal.Id,
@@ -75,6 +77,34 @@ public class BookingService(MainContext mainContext)
             .FirstOrDefaultAsync();
 
         return booking;
+    }
+
+    public async Task<int?> CreateBooking(BookingDto bookingDto, CustomerDto customerDto, int? customerId)
+    {
+        try
+        {
+            var bookingDetails = bookingDto.Animals.Select(animal => new BookingDetail { AnimalId = animal.Id }).ToList();
+            var booking = new Booking
+            {
+                Date = bookingDto.Date,
+                Confirmed = false,
+                TotalPrice = bookingDto.TotalPrice,
+                CustomerId = customerId,
+                OrderName = customerDto.FullName,
+                OrderAddress = customerDto.Address,
+                Email = customerDto.Email,
+                PhoneNumber = customerDto.PhoneNumber,
+                BookingDetails = bookingDetails
+            };
+            
+            mainContext.Bookings.Add(booking);
+            await mainContext.SaveChangesAsync();
+            return booking.Id;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     public async Task<bool> DeleteBooking(int userId, int bookingId)

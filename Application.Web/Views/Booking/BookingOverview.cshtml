@@ -1,0 +1,182 @@
+@using Application.Web.Views.Components
+
+@model BookingOverviewViewModel
+@{
+    ViewData["Title"] = "Boeking overzicht";
+}
+
+<component type="typeof(BookingStepper)" render-mode="ServerPrerendered" param-CurrentStep="4" />
+
+<div class="uk-flex uk-flex-wrap-reverse gap-4">
+    <div class="uk-card uk-card-default uk-width-expand">
+        <div class="uk-card-header flex uk-flex-middle uk-flex-between uk-margin-bottom">
+            <h1>Stap 4 - Controleer je boeking</h1>
+            <form asp-controller="Booking" asp-action="ConfirmBooking" method="post">
+                <button type="submit" class="uk-button uk-button-primary">Boeking bevestigen</button>
+            </form>
+        </div>
+        <div class="uk-card-body">
+            <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-bottom">
+                <h2>Contactgegevens</h2>
+                @if ((bool)(ViewData["LoggedIn"] ?? false) == false)
+                {
+                    <p class="uk-text-bold">
+                        Klopt het niet? <a asp-action="CustomerDetails" class="text-highlight">Aanpassen</a>
+                    </p>
+                } 
+            </div>
+            
+            <div class="uk-flex gap-4 uk-margin-bottom">
+                <div class="uk-width-1-2">
+                    <label class="uk-form-label">Naam</label>
+                    <p>@Model.Customer.FullName</p>
+                </div>
+                <div class="uk-width-1-2">
+                    <label class="uk-form-label">E-mail</label>
+                    <p>@(Model.Customer.Email ?? "-")</p>
+                </div>
+            </div>
+            <div class="uk-flex gap-4 uk-margin-bottom">
+                <div class="uk-width-1-2">
+                    <label class="uk-form-label">Adres</label>
+                    <p>@Model.Customer.Address</p>
+                </div>
+                <div class="uk-width-1-2">
+                    <label class="uk-form-label">Telefoonnummer</label>
+                    <p>@(Model.Customer.PhoneNumber ?? "-")</p>
+                </div>
+            </div>
+
+            <hr class="uk-padding-bottom uk-margin-top" />
+
+            <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-bottom">
+                <h2>Bestelling</h2>
+                <p class="uk-text-bold">
+                    Klopt het niet? <a asp-action="PickYourAnimal" class="text-highlight">Aanpassen</a>
+                </p>
+            </div>
+            
+            <div class="uk-width-1-2@m">
+                <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-small">
+                    <p class="uk-text-bold">Beestje</p>
+                    <p class="uk-text-bold">Prijs</p>
+                </div>
+                @foreach(var animal in Model.SelectedAnimals)
+                {
+                    <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-xsmall">
+                        <p>@animal.Name</p>
+                        <p>&euro;@animal.Price</p>
+                    </div>
+                }
+                <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-small">
+                    <p class="uk-text-bold">Subtotaal</p>
+                    <p class="uk-text-bold">&euro;@Model.SubTotalPrice</p>
+                </div>
+                
+                <hr class="uk-margin" />
+
+                <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-small">
+                    <p class="uk-text-bold">
+                        Korting
+                        <button type="button" class="uk-icon-button" uk-tooltip="Bekijk regels" uk-toggle="target: #rules-modal">
+                            <uk-icon icon="info" height="14" width="14" stroke-width="2"></uk-icon>
+                        </button>
+                    </p>
+                    <p class="uk-text-bold">Percentage</p>
+                </div>
+                @if (Model.Discounts != null)
+                {
+                    foreach(var discount in Model.Discounts)
+                    {
+                        <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-xsmall">
+                            <p>@discount.Key</p>
+                            <p>@discount.Value&percnt;</p>
+                        </div>
+                    }
+                }
+
+                <hr class="uk-margin" />
+
+                <div class="uk-flex uk-flex-middle uk-flex-between uk-margin-small-bottom uk-margin-top">
+                    <p class="uk-text-bold uk-text-large">Totaal</p>
+                    <p class="uk-text-bold uk-text-large text-highlight">&euro;@Model.TotalPrice</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="uk-width-1-4">
+        <div class="uk-card uk-card-default" uk-sticky="offset: 25">
+            <div class="uk-card-header uk-margin-bottom">
+                <h2 class="uk-card-title">Overzicht boeking</h2>
+            </div>
+            <div class="uk-card-body">
+                <div class="uk-margin-bottom">
+                    <p class="uk-text-bold">Datum</p>
+                    <p class="uk-text-muted">@Model.Date.ToString("dd-MM-yyyy")</p>
+                </div>
+                <div class="uk-margin-bottom">
+                    <div class="uk-flex uk-flex-between uk-margin-small-bottom">
+                        <p class="uk-text-bold">Beestjes</p>
+                        <a asp-controller="Booking" asp-action="PickYourAnimal" class="uk-text-bold text-highlight uk-link-text">Aanpassen</a>
+                    </div>
+                    <div class="uk-flex gap-2 uk-flex-wrap">
+                        @foreach(var animal in Model.SelectedAnimals)
+                        {
+                            <div class="uk-card uk-card-default uk-padding uk-text-center uk-width-auto">
+                                <img width="40" class="uk-margin-auto" src="@animal.Image" alt="@animal.Name"/>
+                                <h4 class="uk-card-title uk-margin-top">@animal.Name</h4>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="uk-margin-bottom">
+                    <div class="uk-flex uk-flex-between">
+                        <p class="uk-text-bold">Subtotaal</p>
+                        <p class="uk-text-bold">&euro;@Model.SubTotalPrice</p>
+                    </div>
+                    @if (Model.Discounts != null)
+                    {
+                        var totalDiscount = Model.Discounts.Sum(d => d.Value);
+                        <div class="uk-flex uk-flex-between">
+                            <p class="uk-text-muted">Korting</p>
+                            <p class="uk-text-muted">@totalDiscount&percnt;</p>
+                        </div>
+                    }
+                    <hr class="uk-margin" />
+                    <div class="uk-flex uk-flex-between">
+                        <p class="uk-text-bold">Totaal</p>
+                        <p class="uk-text-bold text-highlight">&euro;@Model.TotalPrice</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="uk-flex-top" uk-modal id="rules-modal">
+    <div class="uk-margin-auto-vertical uk-modal-dialog">
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title uk-text-bold">Korting regels</h2>
+        </div>
+        <div class="uk-modal-body">
+            <ul class="uk-list uk-list-hyphen uk-margin-bottom">
+                <li>Een boeking met 3 dieren van hetzelfde type krijgt 10% korting</li>
+                <li>Een boeking met een beestje met de naam ‘Eend’ heeft een kans van 1 op 6, op 50% korting.</li>
+                <li>Een boeking op maandag of dinsdag ontvangt 15% korting.</li>
+                <li>
+                    Een boeking met daarin een beestje met in de naam de letter ‘A’ krijgt 2% extra korting.
+                    <ul class="uk-list uk-list-hyphen">
+                        <li>Als er ook een letter B in zit krijgt hij 2% korting extra;</li>
+                        <li>Als er dan ook nog een letter C in zit weer 2% extra;</li>
+                        <li>Etc.</li>
+                    </ul>
+                </li>
+                <li>Klanten met een klantenkaart krijgen 10% korting.</li>
+                <li>Het uiteindelijke kortingspercentage is nooit hoger dan 60%</li>
+            </ul>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">Sluiten</button>
+        </div>
+    </div>
+</div>

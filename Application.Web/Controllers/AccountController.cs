@@ -2,6 +2,7 @@
 using Application.Data.Dto;
 using Application.Data.Services;
 using Application.Web.Models;
+using Application.Web.Rules;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -59,11 +60,13 @@ public class AccountController(AccountService accountService, BookingService boo
         {
             return NotFound();
         }
-
+        
+        var discounts = DiscountRules.GetDiscounts(booking.Animals.ToList(), DateOnly.FromDateTime(booking.Date), account.CustomerCardType);
         var model = new BookingDetailsViewModel
         {
             Booking = booking,
-            Account = account
+            Account = account,
+            Discounts = discounts
         };
 
         return View(model);
