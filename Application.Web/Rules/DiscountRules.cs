@@ -22,7 +22,7 @@ public static class DiscountRules
     public static decimal CalculateTotalPrice(decimal subtotalPrice, Dictionary<string, int>? discounts)
     {
         var discountPercentage = discounts?.Sum(d => d.Value) ?? 0;
-        return subtotalPrice * (1 - (decimal)discountPercentage / 100);
+        return Math.Round(subtotalPrice * (1 - (decimal)discountPercentage / 100), 2);
     }
     
     public static Dictionary<string, int>? GetDiscounts(List<AnimalDto> animals, DateOnly date, CustomerCardType? customerCard)
