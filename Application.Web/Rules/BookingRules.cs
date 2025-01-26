@@ -18,7 +18,7 @@ public static class BookingRules
     }
     
     // Combinations
-    private static bool NoLionOrPolarBearWithFarmAnimal(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, out string errorMessage)
+    public static bool NoLionOrPolarBearWithFarmAnimal(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, out string errorMessage)
     {
         errorMessage = "Je mag geen beestje boeken met het type ‘Leeuw’ of ‘IJsbeer’ als je ook een beestje boekt van het type ‘Boerderijdier";
         var isValid = (!selectedAnimals.Any(a => a.Name.Equals("leeuw", StringComparison.CurrentCultureIgnoreCase) 
@@ -33,7 +33,7 @@ public static class BookingRules
     }
     
     // Time and season based
-    private static bool NoPenguinOnWeekend(AnimalDto animalToAdd, DateOnly date, out string errorMessage)
+    public static bool NoPenguinOnWeekend(AnimalDto animalToAdd, DateOnly date, out string errorMessage)
     {
         errorMessage = "Je mag geen beestje boeken met de naam ‘Pinguïn’ in het weekend";
         var isValid = !animalToAdd.Name.Equals(
@@ -44,7 +44,7 @@ public static class BookingRules
         return isValid;
     }
     
-    private static bool NoDesertAnimalOctToFeb(AnimalDto animalToAdd, DateOnly date, out string errorMessage)
+    public static bool NoDesertAnimalOctToFeb(AnimalDto animalToAdd, DateOnly date, out string errorMessage)
     {
         errorMessage = "Je mag geen beestje boeken van het type ‘Woestijn’ in de maanden oktober t/m februari";
         var isValid = animalToAdd.Type != AnimalType.Desert 
@@ -54,18 +54,17 @@ public static class BookingRules
         return isValid;
     }
     
-    private static bool NoSnowAnimalJunToAug(AnimalDto animalToAdd, DateOnly date, out string errorMessage)
+    public static bool NoSnowAnimalJunToAug(AnimalDto animalToAdd, DateOnly date, out string errorMessage)
     {
         errorMessage = "Je mag geen beestje boeken van het type ‘Sneeuw’ in de maanden juni t/m augustus";
-        var isValid = animalToAdd.Type != AnimalType.Snow 
-               || (date.Month >= 9 && date.Month <= 5);
-        
+        var isValid = animalToAdd.Type != AnimalType.Snow
+                      || !(date.Month >= 6 && date.Month <= 8);
         if (isValid) errorMessage = string.Empty;
         return isValid;
     }
     
     // Customer card based
-    private static bool ValidateCustomerCard(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, CustomerCardType? customerCard, out string errorMessage)
+    public static bool ValidateCustomerCard(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, CustomerCardType? customerCard, out string errorMessage)
     {
         errorMessage = string.Empty;
         bool isValid;
@@ -91,7 +90,7 @@ public static class BookingRules
         }
         return isValid;
     }
-    
+
     private static bool IsAllowedForNoCard(AnimalDto animalToAdd, List<AnimalDto> selectedAnimals, out string errorMessage)
     {
         errorMessage = "Klanten zonder klantenkaart mogen maximaal 3 dieren boeken, behalve dieren van het type VIP";

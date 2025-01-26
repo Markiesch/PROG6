@@ -21,7 +21,8 @@ public static class DiscountRules
     
     public static decimal CalculateTotalPrice(decimal subtotalPrice, Dictionary<string, int>? discounts)
     {
-        return subtotalPrice - discounts?.Sum(d => d.Value) ?? subtotalPrice;
+        var discountPercentage = discounts?.Sum(d => d.Value) ?? 0;
+        return Math.Round(subtotalPrice * (1 - (decimal)discountPercentage / 100), 2);
     }
     
     public static Dictionary<string, int>? GetDiscounts(List<AnimalDto> animals, DateOnly date, CustomerCardType? customerCard)
@@ -43,14 +44,14 @@ public static class DiscountRules
     }
     
     // Three same type discount
-    private static int ThreeSameTypeDiscount(List<AnimalDto> animals)
+    public static int ThreeSameTypeDiscount(List<AnimalDto> animals)
     {
         var animalGroups = animals.GroupBy(a => a.Type);
         return animalGroups.Any(g => g.Count() >= 3) ? ThreeSameTypePercentage : 0;
     }
     
     // Duck change discount
-    private static int DuckChangeDiscount(List<AnimalDto> animals)
+    public static int DuckChangeDiscount(List<AnimalDto> animals)
     {
         if (!animals.Any(a => a.Name.Equals("eend", StringComparison.CurrentCultureIgnoreCase)))
             return 0;
@@ -60,13 +61,13 @@ public static class DiscountRules
     }
     
     // Monday or Tuesday discount
-    private static int MondayOrTuesdayDiscount(DateOnly date)
+    public static int MondayOrTuesdayDiscount(DateOnly date)
     {
         return date.DayOfWeek is DayOfWeek.Monday or DayOfWeek.Tuesday ? MondayOrTuesdayPercentage : 0;
     }
     
     // Alphabetical discount
-    private static int AlphabeticalDiscount(List<AnimalDto> animals)
+    public static int AlphabeticalDiscount(List<AnimalDto> animals)
     {
         return animals.Select(animal =>
             { 
@@ -78,7 +79,7 @@ public static class DiscountRules
     }
     
     // Customer card discount
-    private static int CustomerCardDiscount(CustomerCardType? customerCard)
+    public static int CustomerCardDiscount(CustomerCardType? customerCard)
     {
         return customerCard.HasValue ? CustomerCardPercentage : 0;
     }
