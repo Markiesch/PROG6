@@ -58,9 +58,19 @@ public class AccountService(MainContext context, UserManager<User> userManager)
         var password = CreateRandomPassword();
 
         var result = await userManager.CreateAsync(user, password);
-        await userManager.AddToRoleAsync(user, UserRole.Customer.ToString());
-
-        return (result.Succeeded ? password : null, errors);
+        
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(user, UserRole.Customer.ToString());
+            return (password, errors);
+        }
+        
+        foreach (var error in result.Errors)
+        {
+            errors[error.Code] = error.Description;
+        }
+        
+        return (null, errors);
     }
 
     private string CreateRandomPassword()
